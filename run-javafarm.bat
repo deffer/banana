@@ -1,0 +1,1 @@
+/usr/lib/jvm/java-1.7.0/bin/java -server -Xmx512m -XX:MaxPermSize=256M -Djava.io.tmpdir=/var/lib/fat/tmp -verbose:gc -Xloggc:/var/log/fat/gc.log -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Dlogback.configurationFile=/etc/fat/logback.xml -Dwebapp.log.directory=/var/log/fat -jar /usr/share/fat.war -P/etc/fat/fat.properties

@@ -1,0 +1,1 @@
+c:\apps\jdk7\bin\java -Dfile.encoding=UTF-8 -jar target/banana-core-1.1-SNAPSHOT.war

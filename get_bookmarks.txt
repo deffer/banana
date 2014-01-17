@@ -1,0 +1,60 @@
+# download your google bookmarks
+http://www.google.com/bookmarks/?output=xml
+OR
+http://www.google.com/bookmarks/?output=xml&num=1000
+
+jQuery does support xmlp if you set dataType to jsonp xml. Per the docs: "As of jQuery 1.5, jQuery can convert a dataType from what it received in the Content-Type header to what you require. For example, if you want a text response to be treated as XML, use "text xml" for the dataType. You can also make a JSONP request, have it received as text, and interpreted by jQuery as XML: "jsonp text xml." Similarly, a shorthand string such as "jsonp xml" will first attempt to convert from jsonp to xml, and, failing that, convert from jsonp to text, and then from text to xml."
+
+
+http://www.mmartins.com/mmartins/googlebookmarksapi/
+
+
+# dowloadn redis for windows from here
+https://github.com/MSOpenTech/redis/blob/2.6/bin/release/redisbin64.zip
+
+# [OPTIONAL] install redis as service
+# download redis service
+https://github.com/kcherenkov/redis-windows-service/downloads
+# create service
+sc create Redis start= auto DisplayName= Redis binpath= "\"C:\Program Files\Redis\RedisService.exe\" \"C:\Program Files\Redis\redis.conf\""
+
+
+# redis links
+https://github.com/xetorthio/jedis
+http://redis.io/topics/data-types-intro
+http://redis.io/commands#generic
+http://redis.io/topics/transactions
+
+
+# Alignment
+http://stackoverflow.com/questions/18404003/bootstrap-3-label-on-the-left-side-instead-above-a-input-field
+
+# select2
+http://ivaynberg.github.io/select2/
+Auto Tokenization
+$("#e20").select2({
+	tags:["red", "green", "blue"],
+    tokenSeparators: [",", " "]
+});
+
+#select2 ui
+<input type="text"
+    ui-select2="select2Options"
+    ng-model="list_of_string"
+>
+
+var myApp = angular.module('theApp', ['ui.select2']);
+
+myApp.controller('MyController', function($scope) {
+    $scope.list_of_string = ['tag1', 'tag2']
+    $scope.select2Options = {
+        'multiple': true,
+        'simple_tags': true,
+        'tags': ['tag1', 'tag2', 'tag3', 'tag4'],  // Can be empty list.
+        'tokenSeparators': [",", " "]
+    };
+});
+
+$("#e13_ca").click(function() {
+	$("#e13").val("CA").trigger("change"); // <--------------
+});
