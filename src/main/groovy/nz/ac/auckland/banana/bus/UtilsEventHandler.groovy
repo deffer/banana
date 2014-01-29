@@ -45,6 +45,8 @@ class UtilsEventHandler implements EventHandler<UtilsRequest, UtilsResponse>{
 			String input = requestType.input
 			if (!input){
 				input = System.currentTimeMillis().toString()
+			}else{
+				input = input.replaceAll(',', '')
 			}
 			Long ilong = new Long(input)
 			String output = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date(ilong))
