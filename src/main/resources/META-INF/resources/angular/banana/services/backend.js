@@ -1,6 +1,8 @@
 myApp.factory('backend', function ($q, $http) {
 
 	var backend = {
+		GET_BOOKMARKS_URL : 'rest/bookmarks/download',
+
 		callUtils: function (action, input, input2) {
 			var defer = $q.defer();
 			var promise = defer.promise;
@@ -14,10 +16,10 @@ myApp.factory('backend', function ($q, $http) {
 			return promise;
 		},
 
-		getBoomarks: function () {
+		getBookmarks: function () {
 			var defer = $q.defer();
 			var promise = defer.promise;
-			$http({method: 'POST', url: 'rest/bookmarks/get'}).
+			$http({method: 'POST', url: backend.GET_BOOKMARKS_URL}).
 				success(function(data, status, headers, config) {
 					// this callback will be called asynchronously
 					// when the response is available

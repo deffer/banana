@@ -72,6 +72,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
                         <li><a href="" ng-click="openImport()">Import from file..</a></li>
+                        <li><a href="" ng-click="export2JSON()">Export..</a></li>
                         <li><a href="" class="pull-left">Edit mode </a>
                             <input type="checkbox" ng-model="editMode" class="pull-left"/>
                         </li>

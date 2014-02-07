@@ -1,6 +1,6 @@
 var myApp = angular.module('igoogleApp', ['ui.bootstrap', 'ui.bootstrap.collapse', 'ui.select2']);
 
-function BookmarksCtrl($scope, $http, $rootScope, uploadManager, backend, bookmarksShuffle) {
+function BookmarksCtrl($scope, $http, $rootScope, $window, uploadManager, backend, bookmarksShuffle) {
 
 	$scope.sessionToken = UOA.sessionToken; // TODO instead of additional token, just use xsrfHeaderName and xsrfCookieName
 
@@ -65,7 +65,7 @@ function BookmarksCtrl($scope, $http, $rootScope, uploadManager, backend, bookma
 
 
 	$scope.getBookmarksFromServer = function () {
-		backend.getBoomarks().then(function (results) {
+		backend.getBookmarks().then(function (results) {
 			if (_.isUndefined(results) || _.isEmpty(results) || _.isNull(results) || results == 'null') {
 				console.log("Empty response. IGNORE.");
 				return;
@@ -149,6 +149,10 @@ function BookmarksCtrl($scope, $http, $rootScope, uploadManager, backend, bookma
 	$scope.upload = function () {
 		uploadManager.upload();
 		$scope.files = [];
+	};
+
+	$scope.export2JSON = function(){
+		location.href=backend.GET_BOOKMARKS_URL; // NOT $window.open(backend.GET_BOOKMARKS_URL);
 	};
 
 	$scope.proceedLogin = function () {
