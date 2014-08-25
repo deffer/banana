@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>nz.ac.auckland</groupId>
-		<artifactId>uoa-s3jar-parent</artifactId>
-		<version>1.6</version>
+		<groupId>nz.ac.auckland.groupapps.parent</groupId>
+		<artifactId>parent-s3jar-groupapps-central</artifactId>
+		<version>1.4</version>
 	</parent>
 
 	<groupId>nz.ac.auckland.banana</groupId>
@@ -18,18 +18,17 @@
 		<default.repo>UoA.ITSS.GrpApps/banana</default.repo>
 	</properties>
 	<dependencies>
-		<!--dependency>
-			<groupId>nz.ac.auckland.common</groupId>
-			<artifactId>runnable-war-jetty8</artifactId>
-			<version>[3.20,4)</version>
-			<type>war</type>
-		</dependency-->
+
 		<dependency>
 			<groupId>nz.ac.auckland.composite</groupId>
-			<artifactId>composite-s3-web</artifactId>
-			<version>[4,5)</version>
+			<artifactId>composite-s3-webjar</artifactId>
+			<version>[5,6)</version>
 			<exclusions>
 				<exclusion>
+					<groupId>nz.ac.auckland.common</groupId>
+					<artifactId>common-uoa-css</artifactId>
+				</exclusion>
+				<!--exclusion>
 					<groupId>nz.ac.auckland.common</groupId>
 					<artifactId>template-scraper</artifactId>
 				</exclusion>
@@ -40,7 +39,7 @@
 				<exclusion>
 					<groupId>nz.ac.auckland.grayles</groupId>
 					<artifactId>grayles-services</artifactId>
-				</exclusion>
+				</exclusion-->
 			</exclusions>
 		</dependency>
 		
@@ -50,15 +49,11 @@
 			<version>[2,3)</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>nz.ac.auckland.composite</groupId>
-			<artifactId>composite-s3-bus</artifactId>
-			<version>[1,2)</version>
-		</dependency>
+
 		<dependency>
 			<groupId>nz.ac.auckland.syllabus</groupId>
 			<artifactId>syllabus-http</artifactId>
-			<version>[1,2)</version>
+			<version>[3,4)</version>
 		</dependency>
 		
 		<dependency>
