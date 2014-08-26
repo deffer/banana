@@ -1,14 +1,17 @@
 package nz.ac.auckland.banana
 
-import nz.ac.auckland.common.testrunner.GroupAppsIntegrationTestRunner
-import nz.ac.auckland.common.testrunner.GroupAppsUnitTestRunner
-import nz.ac.auckland.war.TestRunner
-import org.junit.runner.RunWith
-import org.springframework.test.context.ContextConfiguration
+
+import org.junit.Test
+import bathe.BatheBooter
 
 
-@ContextConfiguration("classpath:/applicationContext.xml")
-@RunWith(GroupAppsUnitTestRunner)
-class LocalTestRunner extends TestRunner {
 
+class LocalTestRunner{
+	@Test
+	public void runWebApplication(){
+		new BatheBooter().runWithLoader(null, null,
+				"nz.ac.auckland.war.WebAppRunner",
+				["-Pclasspath:/war.properties",
+				"-P${System.getProperty('user.home')}/.webdev/banana.properties"] as String[])
+	}
 }

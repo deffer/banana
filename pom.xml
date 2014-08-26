@@ -24,10 +24,6 @@
 			<artifactId>composite-s3-webjar</artifactId>
 			<version>[5,6)</version>
 			<exclusions>
-				<exclusion>
-					<groupId>nz.ac.auckland.common</groupId>
-					<artifactId>common-uoa-css</artifactId>
-				</exclusion>
 				<!--exclusion>
 					<groupId>nz.ac.auckland.common</groupId>
 					<artifactId>template-scraper</artifactId>
@@ -42,7 +38,25 @@
 				</exclusion-->
 			</exclusions>
 		</dependency>
-		
+		<dependency>
+			<groupId>nz.ac.auckland.composite</groupId>
+			<artifactId>composite-s3-runnable</artifactId>
+			<version>[5,6)</version>
+		</dependency>
+
+		<dependency>
+			<groupId>nz.ac.auckland.composite</groupId>
+			<artifactId>composite-unittest</artifactId>
+			<version>[2.4,3)</version>
+		</dependency>
+
+		<dependency>
+			<groupId>nz.ac.auckland.lmz</groupId>
+			<artifactId>lmz-simple-spring-webhost</artifactId>
+			<version>[1,2)</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>nz.ac.auckland.stencil</groupId>
 			<artifactId>stencil-core</artifactId>
@@ -56,11 +70,11 @@
 			<version>[3,4)</version>
 		</dependency>
 		
-		<dependency>
+		<!--dependency>
 			<groupId>nz.ac.auckland.common</groupId>
 			<artifactId>common-jetty8</artifactId>
 			<version>[4,)</version>
-		</dependency>
+		</dependency-->
 
 		<!--dependency>
 			<groupId>nz.ac.auckland.common</groupId>
@@ -69,20 +83,20 @@
 			<classifier>runner</classifier>
 		</dependency-->
 		
-		<dependency>
+		<!--dependency>
 			<groupId>nz.ac.auckland.common</groupId>
 			<artifactId>common-jetty-testhost</artifactId>
 			<version>[1,)</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 
 		
-		<dependency>
+		<!--dependency>
 			<groupId>nz.ac.auckland.common</groupId>
 			<artifactId>common-jetty-testrunner</artifactId>
 			<version>[1,2)</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 
 
 		<!-- Third parties -->
