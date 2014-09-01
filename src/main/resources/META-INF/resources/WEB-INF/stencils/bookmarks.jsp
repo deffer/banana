@@ -16,14 +16,15 @@
 		UOA.sessionToken = "${sessionToken}";
 	</script>
 
+	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+
 	<%--stylesheet includes --%>
 	<jawr:style src="/bundles/all.css"/>
 
     <script src="app-resources/global.js"></script>
     <!--script src="app-resources/session.js"></script-->
 
-	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
-	<link href="${contextPath}/css/app.css" rel="stylesheet"/>
+	<%--<link href="${contextPath}/css/app.css" rel="stylesheet"/>--%>
 	<%--<link href="${contextPath}/localcss/bootstrap-2.3.2.min.css" rel="stylesheet"/>--%>
 
 	<!-- wibble -->
