@@ -21,3 +21,10 @@ button.btn:focus {
     direction: ltr;
     cursor: pointer;
 }
+.dropdown-menu > li{
+    padding: 1px 20px;
+}
+.dropdown-menu > li > a {
+    padding: 1px 20px;
+    font-size: small;
+}

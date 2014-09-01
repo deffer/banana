@@ -23,6 +23,7 @@
     <!--script src="app-resources/session.js"></script-->
 
 	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+	<link href="${contextPath}/css/app.css" rel="stylesheet"/>
 	<%--<link href="${contextPath}/localcss/bootstrap-2.3.2.min.css" rel="stylesheet"/>--%>
 
 	<!-- wibble -->
@@ -70,17 +71,17 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
-                        <li><a href="" ng-click="openImport()">Import from file..</a></li>
-                        <li><a href="" ng-click="export2JSON()">Export..</a></li>
-                        <li><a href="" class="pull-left">Edit mode </a>
+                        <li class="cct"><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
+                        <li class="cct"><a href="" ng-click="openImport()">Import from file..</a></li>
+                        <li class="cct"><a href="" ng-click="export2JSON()">Export..</a></li>
+                        <li class="cct"><a href="" class="pull-left">Edit mode </a>
                             <input type="checkbox" ng-model="editMode" class="pull-left"/>
                         </li>
                     </ul>
                 </div>
 
             </div>
-            <div ng-show="filterInput">
+            <div ng-show="bookmarkStore.filterOn">
                 <a href="" ng-click="clearFilter()" style="font-size: small;">Clear filter</a>
             </div>
 
@@ -102,10 +103,12 @@
         <ul class="unstyled">
             <li ng-repeat="b in selectedBookmarks">
                 <div>
-                    <i class="icon-remove pull-right" title="Delete" style="cursor: pointer;" ng-show="editMode" ng-click="deleteBookmark(b)"></i>
-                    <i class="icon-pencil pull-right" title="Edit" style="cursor: pointer;" ng-show="editMode" ng-click="editBookmark(b)"></i>
-                    <a href="{{b.url}}" target="_blank" style="font-size:small; display:block; margin-left: 2px; margin-right: 50px;">- {{b.title}}</a>
-                    <!--button type="button" class="close pull-right" aria-hidden="true" title="Delete">&times;</button-->
+                    <i class="icon-remove pull-right" title="Delete" style="cursor: pointer;"
+                       ng-show="editMode" ng-click="deleteBookmark(b)"></i>
+                    <i class="icon-pencil pull-right" title="Edit" style="cursor: pointer;"
+                       ng-show="editMode" ng-click="editBookmark(b)"></i>
+                    <a href="{{b.url}}" target="_blank"
+                       style="font-size:small; display:block; margin-left: 2px; margin-right: 50px;">- {{b.title}}</a>
                 </div>
             </li>
         </ul>
