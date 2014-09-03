@@ -81,6 +81,10 @@ function BookmarksCtrl($scope, $http, $rootScope, $window, uploadManager, backen
 		});
 	};
 
+	$scope.setSelectedFolder = function(selection){
+		$scope.selectedFolder = selection;
+	};
+
 	$scope.$watch('selectedFolder', function () {
 		$scope.selectedBookmarks = $scope.bookmarkStore.bookmarks[$scope.selectedFolder];
 	});

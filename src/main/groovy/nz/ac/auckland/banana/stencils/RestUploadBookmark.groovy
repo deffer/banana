@@ -20,38 +20,38 @@ class RestUploadBookmark extends TextFileUploadStencil {
 
 	int maxFileSize = 1024 * 1024 * 5
 
-	List files = []
-
 	@Inject UserStore userStore
 	@Inject BookmarksStore bookmarksStore
-
-	protected List getUserStorage() {
-		return files
-	}
-
 
 	void acceptFile(String name, String body, HttpServletResponse response){
 		response.setHeader("Content-Type", "application/json");
 		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
+		//PrintWriter out = response.getWriter();
 
 		try{
-			Document doc = Jsoup.parse(body)
-			Elements elements = doc.body().children().select('bookmarks')
-			if (elements.size() == 1){
 
-				String currentUser = userStore.userId
-				log.debug("Adding to: User $currentUser, session ${userStore.sessionId}")
-				List bookmarks = parseBookmarks(elements[0])
+			String currentUser = userStore.userId
+			log.debug("Adding to: User $currentUser, session ${userStore.sessionId}")
 
-				if (currentUser){
-					bookmarksStore.addUserBookmarks(currentUser, bookmarks)
-				}else{
-					bookmarksStore.addSessionBookmarks(userStore.sessionId, bookmarks)
-				}
+			List bookmarks
 
+			if (body.startsWith('[{')){
+				bookmarks = parseBookmarkJson(body)
 			}else{
-				response.sendError(403, 'Not supported file format. Expected google bookmarks')
+				Document doc = Jsoup.parse(body)
+				Elements elements = doc.body().children().select('bookmarks')
+				if (elements.size() != 1){
+					response.sendError(403, 'Not supported file format. Expected google bookmarks')
+					return
+				}else{
+					bookmarks = parseBookmarksXml(elements[0])
+				}
+			}
+
+			if (currentUser){
+				bookmarksStore.addUserBookmarks(currentUser, bookmarks)
+			}else{
+				bookmarksStore.addSessionBookmarks(userStore.sessionId, bookmarks)
 			}
 
 		}catch (Exception e){
@@ -59,10 +59,14 @@ class RestUploadBookmark extends TextFileUploadStencil {
 			response.sendError(403, 'Unable to store file')
 		}
 
-		getUserStorage().add(body)
 	}
 
-	protected List parseBookmarks(Element bookmarkNode){
+	protected List parseBookmarkJson(String wholeBody){
+		// TODO parse JSON
+		return []
+	}
+
+	protected List parseBookmarksXml(Element bookmarkNode){
 		List<Map> result = []
 		int count = 0
 		bookmarkNode.children().each {Element e ->

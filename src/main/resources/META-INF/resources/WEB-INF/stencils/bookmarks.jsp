@@ -37,6 +37,9 @@
 <div class="container">
 
     <div class="well well-large">
+        <div ng-show="!signedIn" style="margin-bottom: 10px;">
+            <span title="All data you see is an example and all changes you do will be lost."> You are not logged in. Hover for more info.</span>
+        </div>
 	    <div id="gConnect" ng-show="!signedIn">
 		    <button class="g-signin"
 		            data-scope="https://www.googleapis.com/auth/plus.me"
@@ -72,10 +75,10 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li class="cct"><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
-                        <li class="cct"><a href="" ng-click="openImport()">Import from file..</a></li>
-                        <li class="cct"><a href="" ng-click="export2JSON()">Export..</a></li>
-                        <li class="cct"><a href="" class="pull-left">Edit mode </a>
+                        <li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
+                        <li><a href="" ng-click="openImport()">Import from file..</a></li>
+                        <li><a href="" ng-click="export2JSON()">Export..</a></li>
+                        <li><a href="" class="pull-left">Edit mode </a>
                             <input type="checkbox" ng-model="editMode" class="pull-left"/>
                         </li>
                     </ul>
@@ -98,8 +101,20 @@
 
 	    <!-- %@include file="_bm_add.jsp" % -->
 
-        <select class="span4" style="display:block;"
-                ng-model="selectedFolder" ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select>
+        <select class="span4" style="display:block;" ng-model="selectedFolder"
+                ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select>
+
+        <div class="btn-group" style="margin-bottom: 10px;">
+            <button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: left;">
+                {{selectedFolder}}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="folder in bookmarkStore.displayFolders" class="cct">
+                    <a class="cct" href="" ng-click="setSelectedFolder(folder.id)">{{folder.name}}</a>
+                </li>
+            </ul>
+        </div>
 
         <ul class="unstyled">
             <li ng-repeat="b in selectedBookmarks">
