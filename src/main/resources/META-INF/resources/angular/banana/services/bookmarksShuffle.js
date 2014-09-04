@@ -1,5 +1,5 @@
 myApp.factory('bookmarksShuffle', function (){
-	var result = {
+	var service = {
 		folderUnlabelled : {id: 'App123Unlabelled', originalName: 'Unlabelled', count: 0},
 		folderAll : {id: 'App123AllLabels', originalName: 'All', count: 0},
 
@@ -7,20 +7,21 @@ myApp.factory('bookmarksShuffle', function (){
 			bookmarkStore.filterOn = false;
 
 			bookmarkStore.all = bookmarks;
-			result.filterByPartial(bookmarkStore, []);
+			service.filterByPartial(bookmarkStore, []);
 			return bookmarkStore;
 		},
 
         /**
-         * Expect bookmarkStore.all to contain all bookmarks. Will populate next fields:
-         *   -folders
-         *   -bookmarks
-         *   -displayBookmarks
+         * Expect bookmarkStore.all to contain all bookmarks. Each bookmarks is a map:
+         *   {}
+         * Will populate next fields:
+         *   -folders = [{id: label, originalName: label, count: 0}, {}, ...]
+         *   -bookmarks = map: label -> [ {}, {}, {}, ... ] where {} is a bookmark
+         *   -displayFolders = same as folder + All + Unlabelled
          *   -unlabelled
          *   -urlsMap
          * @param bookmarkStore
-         * @param filter
-         * @returns {*}
+         * @param filter array of partials. If any of the partials matches any part of url or title, its a match!
          */
 		filterByPartial: function(bookmarkStore, filter){
 
@@ -32,35 +33,37 @@ myApp.factory('bookmarksShuffle', function (){
 				bookmarkStore.bookmarks[label] = [];
 			});
 
-			bookmarkStore.bookmarks[result.folderUnlabelled.id] = [];
-			bookmarkStore.bookmarks[result.folderAll.id] = [];
+			bookmarkStore.bookmarks[service.folderUnlabelled.id] = [];
+			bookmarkStore.bookmarks[service.folderAll.id] = [];
 
 			// group bookmarks into folders (labels)
 			_.each(bookmarkStore.all, function(b){
-				if (result.matchesFilter(b, filter)) {
+				if (service.matchesFilter(b, filter)) {
 					var labels;
 					if (b.labels.length == 0){
-						labels = [result.folderUnlabelled.id]
+						labels = [service.folderUnlabelled.id]
 					}else{
 						labels = b.labels;
 					}
 					_.each(labels, function(label){
-						bookmarkStore.bookmarks[label].push({id: b.id, url: b.url, title: b.title, labels: b.labels, label: label});
+						//bookmarkStore.bookmarks[label].push({id: b.id, url: b.url, title: b.title, labels: b.labels, label: label});
+						bookmarkStore.bookmarks[label].push(_.extend({}, b, {label: label}));
 					});
 					// also add to all
-					bookmarkStore.bookmarks[result.folderAll.id].push(({id: b.id, url: b.url, title: b.title, labels: b.labels}));
+					//bookmarkStore.bookmarks[service.folderAll.id].push({id: b.id, url: b.url, title: b.title, labels: b.labels});
+					bookmarkStore.bookmarks[service.folderAll.id].push(_.extend({}, b));
 				}
 			});
 
 
 			bookmarkStore.displayFolders = [];
 			bookmarkStore.displayFolders.push.apply(bookmarkStore.displayFolders, bookmarkStore.folders);
-			bookmarkStore.displayFolders.push(result.folderAll);
-			if (bookmarkStore.bookmarks[result.folderUnlabelled.id].length>0)
-				bookmarkStore.displayFolders.push(result.folderUnlabelled);
+			bookmarkStore.displayFolders.push(service.folderAll);
+			if (bookmarkStore.bookmarks[service.folderUnlabelled.id].length>0)
+				bookmarkStore.displayFolders.push(service.folderUnlabelled);
 
 	        bookmarkStore.displayFolders.sort(function(a,b){return a.originalName.localeCompare(b.originalName)});
-			bookmarkStore.unlabelled = bookmarkStore.bookmarks[result.folderUnlabelled.id];
+			bookmarkStore.unlabelled = bookmarkStore.bookmarks[service.folderUnlabelled.id];
 
 
 			console.log(bookmarkStore.displayFolders);
@@ -91,7 +94,7 @@ myApp.factory('bookmarksShuffle', function (){
 
 		clearFilter : function(bookmarkStore){
 			if (bookmarkStore.filterOn)
-				result.filterByPartial(bookmarkStore, []);
+				service.filterByPartial(bookmarkStore, []);
 			bookmarkStore.filterOn = false;
 		},
 
@@ -146,10 +149,10 @@ myApp.factory('bookmarksShuffle', function (){
        				{url: "http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf", title: "Netcat cheat sheet", id: 5, labels: ["Development", "Unix"]},
        				{url: "http://clippy.in/b/YJLM9W", title: "Favorite Linux Commands", id: 11, labels: ["Unix"]},
        	   			{url: "https://gist.github.com/nifl/1178878", title: "Grok vi", id: 12, labels: ["Unix"]}];
-            return result.filterByPartial({all:example, filterOn:false}, []);
+            return service.filterByPartial({all:example, filterOn:false}, []);
         }
 	};
-	return result;
+	return service;
 });
 
 /*bookmarkStore.folders = [];
