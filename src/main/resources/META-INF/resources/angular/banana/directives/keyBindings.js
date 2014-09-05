@@ -1,4 +1,4 @@
-myApp.directive('ngOnEnter',function(){
+iBookmarks.app.directive('ngOnEnter',function(){
 
 	var linkFn = function(scope,element,attrs) {
 		element.bind("keypress", function(e) {

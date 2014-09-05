@@ -1,4 +1,4 @@
-myApp.directive('quickAdd', ['bookmarksShuffle', function (bookmarksShuffle) {
+iBookmarks.app.directive('quickAdd', ['bookmarksShuffle', function (bookmarksShuffle) {
 	return {
 		restrict: 'A',
 		scope: {

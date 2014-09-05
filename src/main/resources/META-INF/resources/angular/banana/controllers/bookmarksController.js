@@ -1,6 +1,5 @@
-var myApp = angular.module('igoogleApp', ['ui.bootstrap', 'ui.bootstrap.collapse', 'ui.select2']);
-
-function BookmarksCtrl($scope, $http, $rootScope, $window, uploadManager, backend, bookmarksShuffle) {
+iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'uploadManager', 'backend', 'bookmarksShuffle',
+	function($scope, $http, $rootScope, $window, uploadManager, backend, bookmarksShuffle) {
 
 	$scope.sessionToken = UOA.sessionToken; // TODO instead of additional token, just use xsrfHeaderName and xsrfCookieName
 
@@ -221,4 +220,4 @@ function BookmarksCtrl($scope, $http, $rootScope, $window, uploadManager, backen
 		}
 		$scope.$apply();
 	});
-}
+}];

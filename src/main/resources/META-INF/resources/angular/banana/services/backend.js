@@ -1,4 +1,4 @@
-myApp.factory('backend', function ($q, $http) {
+iBookmarks.app.factory('backend', function ($q, $http) {
 
 	var backend = {
 		GET_BOOKMARKS_URL : 'rest/bookmarks/download',

@@ -1,4 +1,4 @@
-myApp.factory('bookmarksShuffle', function (){
+iBookmarks.app.factory('bookmarksShuffle', function (){
 	var service = {
 		folderUnlabelled : {id: 'App123Unlabelled', originalName: 'Unlabelled', count: 0},
 		folderAll : {id: 'App123AllLabels', originalName: 'All', count: 0},

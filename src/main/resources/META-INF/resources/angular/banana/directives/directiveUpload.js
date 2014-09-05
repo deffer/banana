@@ -1,4 +1,4 @@
-myApp.factory('uploadManager', function ($rootScope) {
+iBookmarks.app.factory('uploadManager', function ($rootScope) {
 	var _files = [];
 	return {
 		add: function (file) {
@@ -30,7 +30,7 @@ myApp.factory('uploadManager', function ($rootScope) {
 	};
 });
 
-myApp.directive('upload', ['uploadManager', function factory(uploadManager) {
+iBookmarks.app.directive('upload', ['uploadManager', function factory(uploadManager) {
 	return {
 		restrict: 'A',
 		link: function (scope, element, attrs) {

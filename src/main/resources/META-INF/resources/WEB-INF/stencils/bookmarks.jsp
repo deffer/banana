@@ -1,6 +1,6 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jawr" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html ng-app="igoogleApp" >
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<script type="text/javascript">
@@ -33,7 +33,7 @@
 
     <title>iBookmarks</title>
 </head>
-<body ng-app="igoogleApp"  ng-controller="BookmarksCtrl">
+<body ng-controller="iBookmarks.app.BookmarksCtrl">
 <div class="container">
 
     <div class="well well-large">

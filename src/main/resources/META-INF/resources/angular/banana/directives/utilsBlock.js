@@ -1,4 +1,4 @@
-myApp.directive('utilsBlock', ['backend', function (backend) {
+iBookmarks.app.directive('utilsBlock', ['backend', function (backend) {
 	return {
 		restrict: 'A',
 		scope: {
