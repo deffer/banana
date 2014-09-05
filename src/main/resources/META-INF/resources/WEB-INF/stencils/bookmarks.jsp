@@ -101,8 +101,15 @@
 
 	    <!-- %@include file="_bm_add.jsp" % -->
 
-        <select class="span4" style="display:block;" ng-model="selectedFolder"
-                ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select>
+        <div class="modal-content" ng-show="false">
+            <div class="smoke-layer"><!----></div>
+            <div class="modal-box"><!---->
+
+            </div>
+        </div>
+
+        <!--select class="span4" style="display:block;" ng-model="selectedFolder"
+                ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select-->
 
         <div class="btn-group" style="margin-bottom: 10px;">
             <button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: left;">

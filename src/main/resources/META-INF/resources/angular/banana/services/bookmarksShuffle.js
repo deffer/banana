@@ -16,10 +16,10 @@ myApp.factory('bookmarksShuffle', function (){
          *   {}
          * Will populate next fields:
          *   -folders = [{id: label, originalName: label, count: 0}, {}, ...]
-         *   -bookmarks = map: label -> [ {}, {}, {}, ... ] where {} is a bookmark
+         *   -bookmarks = map: label -> [ {}, {}, {}, ... ] where {} is a bookmark. only those matching filter.
          *   -displayFolders = same as folder + All + Unlabelled
          *   -unlabelled
-         *   -urlsMap
+         *   -urlsMap = map: url -> [ids...]
          * @param bookmarkStore
          * @param filter array of partials. If any of the partials matches any part of url or title, its a match!
          */
@@ -100,15 +100,12 @@ myApp.factory('bookmarksShuffle', function (){
 
 		checkBookmarkExists : function(bookmarkStore, inputUrl){
 			var urlsMap = bookmarkStore.urlsMap;
-			var scopeBookmarks = bookmarkStore.bookmarks;
-
 			if (inputUrl && urlsMap[inputUrl]){
 				var bookmarkId = urlsMap[inputUrl][0]; // get first bookmarks that match entered url
-				var bookmarksAll = _.flatten(_.values(scopeBookmarks), true);
-				var bookmarks = _.filter(bookmarksAll, function(b){return b.id == bookmarkId});
+				var bookmarks = _.find(bookmarkStore.all, function(b){return b.id == bookmarkId});
 				if (bookmarks){
 					console.log(bookmarks);
-					var b = bookmarks[0];
+					var b = bookmarks; // bookmarks[0];
 					var result = {id: bookmarkId, title: b.title,
 						url:inputUrl,
 						shortTitle: b.title.substring(0, _.min(b.title.length, 15)),
