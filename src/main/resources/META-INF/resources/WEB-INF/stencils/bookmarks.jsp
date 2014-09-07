@@ -11,9 +11,9 @@
 			var s = document.getElementsByTagName('script')[0];
 			s.parentNode.insertBefore(po, s);
 		})();
-		var UOA = UOA || {};
-		UOA.baseUrl = '<%=request.getContextPath()%>';
-		UOA.sessionToken = "${sessionToken}";
+		var iBookmarks = iBookmarks || {};
+		iBookmarks.baseUrl = '<%=request.getContextPath()%>';
+		iBookmarks.sessionToken = "${sessionToken}";
 	</script>
 
 	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
@@ -33,10 +33,10 @@
 
     <title>iBookmarks</title>
 </head>
-<body ng-controller="iBookmarks.app.BookmarksCtrl">
+<body>
 <div class="container">
 
-    <div class="well well-large">
+    <div ng-controller="iBookmarks.app.LoginCtrl" class="well well-large">
         <div ng-show="!signedIn" style="margin-bottom: 10px;">
             <span title="All data you see is an example and all changes you do will be lost."> You are not logged in. Hover for more info.</span>
         </div>
@@ -57,7 +57,7 @@
 	    </div>
     </div>
 
-    <div name="leftColumn">
+    <div ng-controller="iBookmarks.app.BookmarksCtrl" name="leftColumn">
 
         <div class="well span4">
 
