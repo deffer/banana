@@ -99,20 +99,11 @@
         </div>
 
 
-	    <!-- %@include file="_bm_add.jsp" % -->
-
-        <div class="modal-content" ng-show="false">
-            <div class="smoke-layer"><!----></div>
-            <div class="modal-box"><!---->
-
-            </div>
-        </div>
-
         <!--select class="span4" style="display:block;" ng-model="selectedFolder"
                 ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select-->
 
         <div class="btn-group" style="margin-bottom: 10px;">
-            <button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: left;">
+            <button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: right;">
                 {{selectedFolder}}
                 <span class="caret"></span>
             </button>
@@ -141,7 +132,9 @@
         </div>
     </div>
 
-    <div name="rightColumn">
+    <%@include file="_bm_add.jsp" %>
+
+    <div ng-controller="iBookmarks.app.UtilsCtrl" name="rightColumn">
         <div class="well span6">
 			<%@include file="_utils.jsp" %>
         </div>

@@ -172,4 +172,9 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 		}
 		$scope.$apply();
 	});
+
+	/*$scope.$on('$routeChangeSuccess', function (event, currentRoute, previousRoute) {
+		$scope.showMe.show = (currentRoute.controller === IdentityCapture.app.favouritesController ||
+			currentRoute.controller === IdentityCapture.app.allProfilesController);
+	});*/
 }];

@@ -35,3 +35,26 @@ button.btn:focus {
 .dropdown-menu > li > a.boldit {
 	font-weight: bold;
 }
+
+.modal-box {
+	position: absolute;
+	z-index: 1001;
+}
+
+.smoke-layer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(10, 10, 10, 0.4);
+	z-index: 1000;
+}
+
+.modal-content {
+	left: 50%;
+	margin-top: -120px;
+	margin-left: -250px;
+	position: absolute;
+	/*display: block;*/
+}
