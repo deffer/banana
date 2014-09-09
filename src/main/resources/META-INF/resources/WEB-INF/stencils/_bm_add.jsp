@@ -1,8 +1,8 @@
-<div ng-controller="iBookmarks.app.ModifyCtrl" class="modal-content" ng-show="!addBookmarkCollapsed">
+<div ng-controller="iBookmarks.app.ModifyCtrl" class="modal-content" id="addBookmarkModalContainer"  ng-show="!addBookmarkCollapsed">
     <div class="smoke-layer" ng-click="closeQuickAdd()"><!----></div>
-    <div class="modal-box"><!---->
+    <div id="addBookmarkModalBox" class="modal-box"><!---->
 
-        <div name="quickEditBlock1">
+        <div name="quickEditBlock1" style="position: relative; overflow: hidden;">
 
             <div class="alert alert-warning" ng-show="inputUrl == suggestedBookmark.url">
                 This url is already bookmarked as '{{suggestedBookmark.shortTitle}}' in '{{suggestedBookmark.listFolders}}'.

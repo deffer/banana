@@ -130,7 +130,8 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 	$scope.editBookmark = function(bookmark){
 		console.log("Asked to save");
-		console.log(bookmark)
+		console.log(bookmark);
+		$rootScope.$broadcast('editBookmark', bookmark);
 	};
 
 	$scope.deleteBookmark = function(bookmark){

@@ -1,5 +1,5 @@
-iBookmarks.app.ModifyCtrl = ['$scope', '$http', '$rootScope', '$window', 'uploadManager', 'backend', 'bookmarksShuffle', 'mainService',
-	function($scope, $http, $rootScope, $window, uploadManager, backend, bookmarksShuffle, mainService) {
+iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'backend', 'bookmarksShuffle', 'mainService',
+	function($scope, $rootScope, $window, $timeout, backend, bookmarksShuffle, mainService) {
 
 	// div's visibility flags
 	$scope.addBookmarkCollapsed = true;
@@ -36,7 +36,19 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$http', '$rootScope', '$window', 'upload
 		return top;
 	};
 
+	$scope.topPos = function() {
+		var height = angular.element("#addBookmarkModalBox").height();
+		return $scope.topPosition(height);
+	};
+
 	$scope.openAddBookmark = function () {
+
+		$timeout(function(){
+			var height = angular.element("#addBookmarkModalBox").height();
+			var top = $scope.topPosition(height);
+			var cont = angular.element("#addBookmarkModalContainer");
+			cont.css('top', top+"px");
+		}, 100);
 
 		$scope.addBookmarkCollapsed = false;
 	};

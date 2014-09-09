@@ -53,8 +53,8 @@ button.btn:focus {
 
 .modal-content {
 	left: 50%;
-	margin-top: -120px;
+	/*margin-top: -120px;*/
 	margin-left: -250px;
 	position: absolute;
-	/*display: block;*/
+	display: block;
 }
