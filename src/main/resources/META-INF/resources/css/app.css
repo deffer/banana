@@ -39,6 +39,25 @@ button.btn:focus {
 .modal-box {
 	position: absolute;
 	z-index: 1001;
+	padding: 20px;
+	background: white;
+	border-radius: 5px;
+	box-shadow: 0 0 10px;
+}
+
+.modal-box .control-row {
+	overflow: hidden;
+	position: relative;
+}
+
+.modal-box .control-label {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.modal-box input[type='text'], .modal-box div.select2-container {
+	margin-left: 100px;
 }
 
 .smoke-layer {

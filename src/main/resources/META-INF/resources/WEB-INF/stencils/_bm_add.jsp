@@ -24,7 +24,7 @@
                 <label class="control-label span1" for="inputBmFolders">Folders</label>
 
                 <input class="span3" ui-select2="select2Options" type="text"
-                       id="inputBmFolders" placeholder="Folders" ng-model="inputLabels">
+                       id="inputBmFolders" placeholder="Folders" ng-model="inputLabels" style="margin-left: 100px;">
             </div>
 
             <div class="controls control-row">
