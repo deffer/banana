@@ -11,19 +11,19 @@
             </div>
 
             <div class="controls control-row">
-                <label class="control-label span1" for="inputBmUrl">Url</label>
-                <input class="span3" type="text" id="inputBmUrl" placeholder="Url" ng-model="inputUrl"/>
+                <label class="control-label" for="inputBmUrl">Url</label>
+                <input class="span4" type="text" id="inputBmUrl" placeholder="Url" ng-model="inputUrl"/>
             </div>
 
             <div class="controls control-row">
-                <label class="control-label span1" for="inputBmName">Name</label>
-                <input class="span3" type="text" id="inputBmName" placeholder="Name" ng-model="inputTitle"/>
+                <label class="control-label" for="inputBmName">Name</label>
+                <input class="span4" type="text" id="inputBmName" placeholder="Name" ng-model="inputTitle"/>
             </div>
 
             <div class="controls control-row" style="margin-bottom:10px;">
-                <label class="control-label span1" for="inputBmFolders">Folders</label>
+                <label class="control-label" for="inputBmFolders">Folders</label>
 
-                <input class="span3" ui-select2="select2Options" type="text"
+                <input class="span4" ui-select2="select2Options" type="text"
                        id="inputBmFolders" placeholder="Folders" ng-model="inputLabels" style="margin-left: 100px;">
             </div>
 

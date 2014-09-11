@@ -116,8 +116,8 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-jspc-maven-plugin</artifactId>
+				<groupId>com.bluetrainsoftware.bathe.web</groupId>
+				<artifactId>bathe-jetty-jspc-maven-plugin</artifactId>
 			</plugin>
 
 			<!--plugin>
