@@ -8,33 +8,35 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 			bookmarkStore.all = bookmarks;
 			service.filterByPartial(bookmarkStore, []);
+			service.updateUrlMap(bookmarkStore); // create urls map for faster access
 			return bookmarkStore;
 		},
 
         /**
-         * Expect bookmarkStore.all to contain all bookmarks. Each bookmarks is a map:
-         *   {}
+         * Expects bookmarkStore.all to contain all bookmarks. Each bookmark is a map:
+         *   {id: .., url: .., title: .., labels: []}
          * Will populate next fields:
-         *   -folders = [{id: label, originalName: label, count: 0}, {}, ...]
-         *   -bookmarks = map: label -> [ {}, {}, {}, ... ] where {} is a bookmark. only those matching filter.
-         *   -displayFolders = same as folder + All + Unlabelled
-         *   -unlabelled
+         *   -foldersList = [{id: label, originalName: label, count: 0}, {}, ...]
+         *   -folders = map: label -> [ {}, {}, {}, ... ] where {} is a bookmark. only those matching filter.
+         *   -displayFolders = same as foldersList + All + Unlabelled
+         *   -unlabelled = [ {}, {}, {}, ... ] where {} is a bookmark.
          *   -urlsMap = map: url -> [ids...]
          * @param bookmarkStore
          * @param filter array of partials. If any of the partials matches any part of url or title, its a match!
          */
 		filterByPartial: function(bookmarkStore, filter){
 
-			bookmarkStore.folders = [];
-			bookmarkStore.bookmarks = {};
+			bookmarkStore.foldersList = [];
+			bookmarkStore.folders = {};
+	        bookmarkStore.displayFolders = [];
 
 			_.each(_.unique(_.flatten(_.pluck(bookmarkStore.all, "labels"), true)), function(label){
-				bookmarkStore.folders.push( {id: label, originalName: label, count: 0} );
-				bookmarkStore.bookmarks[label] = [];
+				bookmarkStore.foldersList.push( {id: label, originalName: label, count: 0} );
+				bookmarkStore.folders[label] = [];
 			});
 
-			bookmarkStore.bookmarks[service.folderUnlabelled.id] = [];
-			bookmarkStore.bookmarks[service.folderAll.id] = [];
+			bookmarkStore.folders[service.folderUnlabelled.id] = [];
+			bookmarkStore.folders[service.folderAll.id] = [];
 
 			// group bookmarks into folders (labels)
 			_.each(bookmarkStore.all, function(b){
@@ -47,40 +49,41 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 					}
 					_.each(labels, function(label){
 						//bookmarkStore.bookmarks[label].push({id: b.id, url: b.url, title: b.title, labels: b.labels, label: label});
-						bookmarkStore.bookmarks[label].push(_.extend({}, b, {label: label}));
+						bookmarkStore.folders[label].push(_.extend({}, b, {label: label}));
 					});
 					// also add to all
 					//bookmarkStore.bookmarks[service.folderAll.id].push({id: b.id, url: b.url, title: b.title, labels: b.labels});
-					bookmarkStore.bookmarks[service.folderAll.id].push(_.extend({}, b));
+					bookmarkStore.folders[service.folderAll.id].push(_.extend({}, b));
 				}
 			});
 
-
-			bookmarkStore.displayFolders = [];
-			bookmarkStore.displayFolders.push.apply(bookmarkStore.displayFolders, bookmarkStore.folders);
+			bookmarkStore.displayFolders.push.apply(bookmarkStore.displayFolders, bookmarkStore.foldersList);
 			bookmarkStore.displayFolders.push(service.folderAll);
-			if (bookmarkStore.bookmarks[service.folderUnlabelled.id].length>0)
+			if (bookmarkStore.folders[service.folderUnlabelled.id].length>0)
 				bookmarkStore.displayFolders.push(service.folderUnlabelled);
 
+	        // TODO All should be first, Unlabelled - last
 	        bookmarkStore.displayFolders.sort(function(a,b){return a.originalName.localeCompare(b.originalName)});
-			bookmarkStore.unlabelled = bookmarkStore.bookmarks[service.folderUnlabelled.id];
+			bookmarkStore.unlabelled = bookmarkStore.folders[service.folderUnlabelled.id];
 
 
 			console.log(bookmarkStore.displayFolders);
 
 			// update labels with total count in each folder
-			_.each(bookmarkStore.displayFolders, function (labelEntry) {
-				var label = labelEntry.id;
-				var items = bookmarkStore.bookmarks[label];
+			_.each(bookmarkStore.displayFolders, function (folderEntry) {
+				var label = folderEntry.id;
+				var items = bookmarkStore.folders[label];
 
-				labelEntry.count = items.length;
-				labelEntry.name = labelEntry.originalName+" ("+labelEntry.count+")"; // <--- label display name
-				console.log("Found " + items.length + " in " + label);
+				folderEntry.count = items.length;
+				folderEntry.name = folderEntry.originalName+" ("+folderEntry.count+")"; // <--- label display name
+				//console.log("Found " + items.length + " in " + label);
 			});
 
+            return bookmarkStore;
+		},
 
-			// create urls map for faster access
-			// todo move out from this method. this doesnt change on filter
+		// create urls map for faster access
+		updateUrlMap : function(bookmarkStore){
 			bookmarkStore.urlsMap = {};
 			var urls = _.each(_.pluck(bookmarkStore.all, 'url'), function(url){bookmarkStore.urlsMap[url] = []});
 			_.each(bookmarkStore.all, function (bookmark) {
@@ -89,7 +92,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 					idsList.push(bookmark.id);
 				}
 			});
-            return bookmarkStore;
+			return bookmarkStore;
 		},
 
 		clearFilter : function(bookmarkStore){
@@ -131,9 +134,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		},
 
 		updateAfterBookmarkAdded: function(b, bookmarkStore){
-			// urlMap = { url1: [bId1, bId2], url2: [bId1, bId3]}
-			// folders = [ {id: abc, name: alphabet (17), originalName: abc, count: 17},  {}]
-			// bookmarks = { abc: [b1, b2 .. b17],  xyz: [b1]}
 
 		},
 
@@ -146,65 +146,11 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
        				{url: "http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf", title: "Netcat cheat sheet", id: 5, labels: ["Development", "Unix"]},
        				{url: "http://clippy.in/b/YJLM9W", title: "Favorite Linux Commands", id: 11, labels: ["Unix"]},
        	   			{url: "https://gist.github.com/nifl/1178878", title: "Grok vi", id: 12, labels: ["Unix"]}];
-            return service.filterByPartial({all:example, filterOn:false}, []);
+	        var result = {all:example, filterOn:false};
+            service.filterByPartial(result, []);
+	        service.updateUrlMap(result);
+	        return result;
         }
 	};
 	return service;
 });
-
-/*bookmarkStore.folders = [];
- bookmarkStore.bookmarks = {};
-
- _.each(_.unique(_.flatten(_.pluck(bookmarks, "labels"), true)), function(label){
- bookmarkStore.folders.push( {id: label, originalName: label, count: 0} );
- bookmarkStore.bookmarks[label] = [];
- });
-
- bookmarkStore.bookmarks[result.folderUnlabelled.id] = [];
- bookmarkStore.bookmarks[result.folderAll.id] = bookmarks;
-
- // group bookmarks into folders (labels)
- _.each(bookmarks, function(b){
- var labels;
- if (b.labels.length == 0){
- labels = [folderUnlabelled.id]
- }else{
- labels = b.labels;
- }
- _.each(labels, function(label){
- bookmarkStore.bookmarks[label].push({id: b.id, url: b.url, title: b.title, labels: b.labels, label: label})
- });
- });
-
-
- bookmarkStore.displayFolders = [];
- bookmarkStore.displayFolders.push.apply(bookmarkStore.displayFolders, bookmarkStore.folders);
- bookmarkStore.displayFolders.push(folderAll);
- if (bookmarkStore.bookmarks[folderUnlabelled.id].length>0)
- bookmarkStore.displayFolders.push(folderUnlabelled);
-
- bookmarkStore.unlabelled = bookmarks[folderUnlabelled.id];
-
-
- console.log(bookmarkStore.displayFolders);
-
- // update labels with total count in each folder
- _.each(bookmarkStore.displayFolders, function (labelEntry) {
- var label = labelEntry.id;
- var items = bookmarkStore.bookmarks[label];
-
- labelEntry.count = items.length;
- labelEntry.name = labelEntry.originalName+" ("+labelEntry.count+")"; // <--- label display name
- console.log("Found " + items.length + " in " + label);
- });
-
-
- // create urls map for faster access
- bookmarkStore.urlsMap = {};
- var urls = _.each(_.pluck(bookmarks, 'url'), function(url){bookmarkStore.urlsMap[url] = []});
- _.each(bookmarks, function (bookmark) {
- var idsList = bookmarkStore.urlsMap[bookmark.url];
- if (!_.contains(idsList, bookmark.id)){
- idsList.push(bookmark.id);
- }
- });*/

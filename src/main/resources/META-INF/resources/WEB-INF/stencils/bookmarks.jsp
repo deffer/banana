@@ -104,12 +104,12 @@
 
         <div class="btn-group" style="margin-bottom: 10px;">
             <button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: right;">
-                {{selectedFolder}}
+                {{selectedFolder.name}}
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
                 <li ng-repeat="folder in bookmarkStore.displayFolders" class="cct">
-                    <a class="cct" href="" ng-click="setSelectedFolder(folder.id)"
+                    <a class="cct" href="" ng-click="setSelectedFolder(folder)"
                        ng-class="{boldit: (bookmarkStore.bookmarks[folder.id].length>0 && bookmarkStore.filterOn)}">
                         {{folder.name}}
                     </a>

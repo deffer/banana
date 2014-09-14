@@ -19,7 +19,7 @@
         <label class="control-label span1" for="inputFolders">Folders</label>
 
         <!--select class="span3" multiple ui-select2="select2Options" id="inputFolders" placeholder="Folders" ng-model="inputLabels" >
-            <option ng-repeat="item in bookmarkStore.folders" value="{{item.id}}">{{item.id}}</option>
+            <option ng-repeat="item in bookmarkStore.foldersList" value="{{item.id}}">{{item.id}}</option>
         </select-->
 
         <input class="span3" ui-select2="select2Options" type="text"

@@ -24,7 +24,7 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 	$scope.select2Options = {
 		'multiple': true, 'simple_tags': true, 'tokenSeparators': [",", " "],
 		'tags': function(){
-			return _.pluck($scope.bookmarkStore.folders, 'id')
+			return _.pluck($scope.bookmarkStore.foldersList, 'id')
 		}
 	};
 

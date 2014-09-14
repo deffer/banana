@@ -8,13 +8,9 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 	// currently displayed bookmarks
 	$scope.bookmarkStore = mainService.bookmarkStore;
-	/*
-	$scope.urlsMap = backend.getExampleUrlsMap();      // { url1: [bId1, bId2], url2: [bId1, bId3]}
-	$scope.folders = backend.getExampleFolders();      // [ {id: abc, name: alphabet},  {id: xyz, name: else}]
-	$scope.bookmarks = backend.getExampleBookmarks();  // { abc: [b1, b2, b3],  xyz: [b1]}
-    */
 
-	$scope.selectedFolder = "Development";
+
+	$scope.selectedFolder =  bookmarksShuffle.folderAll //"Development";
 	$scope.selectedBookmarks = [];
 
 	$scope.filterInput = "";
@@ -34,7 +30,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	$scope.select2Options = {
 		'multiple': true, 'simple_tags': true, 'tokenSeparators': [",", " "],
 		'tags': function(){
-			return _.pluck($scope.bookmarkStore.folders, 'id')
+			return _.pluck($scope.bookmarkStore.foldersList, 'id')
 		}
 	};
 
@@ -67,18 +63,19 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 			mainService.convertFromServer(results);
 
-			$scope.selectedFolder = $scope.bookmarkStore.folders.length ? $scope.bookmarkStore.folders[0].id : 0;
-			console.log("Selected folder is "+$scope.selectedFolder);
+			$scope.selectedFolder = $scope.bookmarkStore.foldersList.length
+				? $scope.bookmarkStore.foldersList[0] : undefined; // TODO select all if nothing
+			console.log("Selected folder is "+$scope.selectedFolder.id);
 			$scope.uploadFileCollapsed = true;
 		});
 	};
 
-	$scope.setSelectedFolder = function(selection){
-		$scope.selectedFolder = selection;
+	$scope.setSelectedFolder = function(folder){
+		$scope.selectedFolder = folder;
 	};
 
 	$scope.$watch('selectedFolder', function () {
-		$scope.selectedBookmarks = $scope.bookmarkStore.bookmarks[$scope.selectedFolder];
+		$scope.selectedBookmarks = $scope.bookmarkStore.folders[$scope.selectedFolder.id];
 	});
 
 	$scope.$watch('inputUrl', function () {
@@ -117,14 +114,14 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	$scope.filterAction = function(){
 		bookmarksShuffle.filterByPartial($scope.bookmarkStore, $scope.filterInput.split(" "));
 		$scope.bookmarkStore.filterOn = true;
-		$scope.selectedBookmarks = $scope.bookmarkStore.bookmarks[$scope.selectedFolder]; // refresh current
+		$scope.selectedBookmarks = $scope.bookmarkStore.folders[$scope.selectedFolder.id]; // refresh current
 	};
 
 	$scope.clearFilter = function(){
 		$scope.filterInput = "";
 		if ($scope.bookmarkStore.filterOn){
 			bookmarksShuffle.clearFilter($scope.bookmarkStore);
-			$scope.selectedBookmarks = $scope.bookmarkStore.bookmarks[$scope.selectedFolder]; // refresh current
+			$scope.selectedBookmarks = $scope.bookmarkStore.folders[$scope.selectedFolder.id]; // refresh current
 		}
 	};
 
