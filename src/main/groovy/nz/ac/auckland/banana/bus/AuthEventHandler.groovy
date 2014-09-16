@@ -12,14 +12,10 @@ import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
-import net.stickycode.stereotype.Configured
 import nz.ac.auckland.banana.services.UserStore
 import nz.ac.auckland.common.config.ConfigKey
 import nz.ac.auckland.common.stereotypes.UniversityComponent
 import nz.ac.auckland.syllabus.events.Event
-import nz.ac.auckland.syllabus.events.EventHandler
-import nz.ac.auckland.syllabus.payload.EventRequestBase
-import nz.ac.auckland.syllabus.payload.EventResponseBase
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -30,7 +26,7 @@ import javax.inject.Inject
  */
 @UniversityComponent
 @Event(name="gplusauth", namespace = "bookmarks")
-class AuthEventHandler implements EventHandler<AuthRequest,AuthResponse>{
+class AuthEventHandler{
 	Logger log = LoggerFactory.getLogger(this.class)
 	static String CLIENT_ID = '636276024216.apps.googleusercontent.com'
 
@@ -52,8 +48,6 @@ class AuthEventHandler implements EventHandler<AuthRequest,AuthResponse>{
 	 */
 	//private static final Gson GSON = new Gson();
 
-
-	@Override
 	AuthResponse handleEvent(AuthRequest requestType) throws Exception {
 		log.warn("Authenticating \nUser: ${requestType.userid}  \nToken: ${requestType.code} \nSession token: ${requestType.sessionToken}\nSecret: ${CLIENT_SECRET}")
 		// todo user token to query gplus api to verify the userid is for this token
@@ -84,13 +78,13 @@ class AuthEventHandler implements EventHandler<AuthRequest,AuthResponse>{
 		}
 	}
 
-	static class AuthRequest extends EventRequestBase{
+	static class AuthRequest{
 		String userid
 		String code
 		String sessionToken
 	}
 
-	static class AuthResponse extends EventResponseBase{
+	static class AuthResponse{
 		String message
 	}
 }

@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>nz.ac.auckland.composite</groupId>
 			<artifactId>composite-s3-webjar</artifactId>
-			<version>[5,6)</version>
+			<version>[5.2,)</version>
 			<exclusions>
 				<!--exclusion>
 					<groupId>nz.ac.auckland.common</groupId>
