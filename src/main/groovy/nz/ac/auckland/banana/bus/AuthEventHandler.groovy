@@ -29,6 +29,8 @@ import javax.inject.Inject
 class AuthEventHandler{
 	Logger log = LoggerFactory.getLogger(this.class)
 	static String CLIENT_ID = '636276024216.apps.googleusercontent.com'
+	//  https://developers.google.com/+/quickstart/java
+	static String NEW_CLIENT_ID='405635638148-34r0rg7p4lt9ov2p8elbaos6jqlrqba6.apps.googleusercontent.com'
 
 	@Inject UserStore userStore
 
