@@ -49,13 +49,16 @@ class AuthEventHandler{
 	//private static final Gson GSON = new Gson();
 
 	AuthResponse handleEvent(AuthRequest requestType) throws Exception {
-		log.warn("Authenticating User: ${requestType.userid}  \nCode: ${requestType.code} \nSession token: ${requestType.sessionToken}\nSecret: ${CLIENT_SECRET}")
-		// todo user token to query gplus api to verify the userid is for this token
+		log.warn("\nAuthenticating User: ${requestType.userid}  \nCode: ${requestType.code} \nSession token: ${requestType.sessionToken}\nSecret: ${CLIENT_SECRET}")
+
 		if (requestType.sessionToken != userStore.getSessionToken()){
 			log.error("Session token wrong!!! Current token is ${userStore.getSessionToken()}")
 			// TODO do NOT authenticate
 		}
-		askGoogle4Token(requestType.code)
+		String id = askGoogle4Token(requestType.code)
+		if (id != requestType.userid){
+
+		}
 		userStore.setUserId(requestType.userid)
 		return new AuthResponse(message: "ok")
 	}
@@ -68,10 +71,14 @@ class AuthEventHandler{
 
 			// You can read the Google user ID in the ID token.
 			// This sample does not use the user ID.
-			GoogleIdToken idToken = tokenResponse.parseIdToken();
-			String gplusId = idToken.getPayload().getUserId();
-			log.debug("Received: userid=$gplusId, subject=${idToken.getPayload().getSubject()} and whole response is \n${tokenResponse.toString()}")
-			return tokenResponse.toString(); // should store the token in the session for later use.
+			GoogleIdToken idToken = tokenResponse.parseIdToken()
+			String gplusId = idToken.getPayload().getSubject()  //getUserId();
+			log.debug("Received: subject=${idToken.getPayload().getSubject()} and whole response is \n${tokenResponse.toString()}")
+
+			// Store the token in the session for later use.
+			//request.getSession().setAttribute("token", tokenResponse.toString());
+
+			return gplusId;
 		} catch (Exception e) {
 			e.printStackTrace()
 			return null

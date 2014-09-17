@@ -43,7 +43,7 @@
 	    <div id="gConnect" ng-show="!signedIn">
 		    <button class="g-signin"
 		            data-scope="https://www.googleapis.com/auth/plus.me"
-		            data-clientId="636276024216.apps.googleusercontent.com"
+		            data-clientId="405635638148-34r0rg7p4lt9ov2p8elbaos6jqlrqba6.apps.googleusercontent.com"
 		            data-accesstype="offline"
 		            data-callback="onSignInCallback"
 		            data-theme="dark"

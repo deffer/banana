@@ -8,8 +8,6 @@ iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backen
 		$scope.authnInfo = {};
 
 		$scope.proceedLogin = function () {
-			console.log("Client login successful");
-			console.log($scope.authnInfo);
 			var request = gapi.client.plus.people.get({'userId': 'me'});
 			request.execute(function (profile) {
 				// profile fields {error, displayName, image.url, cover, coverPhoto, cover.coverPhoto.url, aboutMe, tagline}
@@ -52,6 +50,8 @@ iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backen
 			if (authResult['access_token']) {
 				$scope.authnInfo = authResult; // The user is signed in
 				mainService.authnInfo = authResult;
+				console.log("Client login successful");
+				console.log($scope.authnInfo);
 				gapi.client.load('plus', 'v1', $scope.proceedLogin);
 			} else if (authResult['error']) {
 				$scope.$apply(function () {
@@ -61,7 +61,6 @@ iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backen
 				console.log('There was an error: ' + authResult['error']);
 			}
 
-			console.log("Callback: " + authResult['access_token']);
 		};
 
 		onSignInCallback = $scope.onSignInCallback;  // a hack for sign in button
