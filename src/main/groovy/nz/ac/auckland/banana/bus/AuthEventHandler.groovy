@@ -28,9 +28,7 @@ import javax.inject.Inject
 @Event(name="gplusauth", namespace = "bookmarks")
 class AuthEventHandler{
 	Logger log = LoggerFactory.getLogger(this.class)
-	static String CLIENT_ID = '636276024216.apps.googleusercontent.com'
-	//  https://developers.google.com/+/quickstart/java
-	static String NEW_CLIENT_ID='405635638148-34r0rg7p4lt9ov2p8elbaos6jqlrqba6.apps.googleusercontent.com'
+	static String CLIENT_ID='405635638148-34r0rg7p4lt9ov2p8elbaos6jqlrqba6.apps.googleusercontent.com'
 
 	@Inject UserStore userStore
 
@@ -51,10 +49,10 @@ class AuthEventHandler{
 	//private static final Gson GSON = new Gson();
 
 	AuthResponse handleEvent(AuthRequest requestType) throws Exception {
-		log.warn("Authenticating \nUser: ${requestType.userid}  \nToken: ${requestType.code} \nSession token: ${requestType.sessionToken}\nSecret: ${CLIENT_SECRET}")
+		log.warn("Authenticating User: ${requestType.userid}  \nCode: ${requestType.code} \nSession token: ${requestType.sessionToken}\nSecret: ${CLIENT_SECRET}")
 		// todo user token to query gplus api to verify the userid is for this token
 		if (requestType.sessionToken != userStore.getSessionToken()){
-			log.error("Session token wrong!!!")
+			log.error("Session token wrong!!! Current token is ${userStore.getSessionToken()}")
 			// TODO do NOT authenticate
 		}
 		askGoogle4Token(requestType.code)
@@ -66,13 +64,13 @@ class AuthEventHandler{
 		try {
 			// Upgrade the authorization code into an access and refresh token.
 			GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(TRANSPORT, JSON_FACTORY,
-						CLIENT_ID, CLIENT_SECRET, code, "postmessage").execute();
+						CLIENT_ID, CLIENT_SECRET, code, "postmessage").execute();  // doesnt work anymore :( probably need to add something to JSON_FACTORY
 
 			// You can read the Google user ID in the ID token.
 			// This sample does not use the user ID.
 			GoogleIdToken idToken = tokenResponse.parseIdToken();
 			String gplusId = idToken.getPayload().getUserId();
-			log.debug("Server returns $gplusId and ${tokenResponse.toString()}")
+			log.debug("Received: userid=$gplusId, subject=${idToken.getPayload().getSubject()} and whole response is \n${tokenResponse.toString()}")
 			return tokenResponse.toString(); // should store the token in the session for later use.
 		} catch (Exception e) {
 			e.printStackTrace()
