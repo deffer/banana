@@ -81,10 +81,9 @@ class AuthEventHandler{
 		}
 	}
 
-	static class AuthRequest{
+	static class AuthRequest extends BasicRequest{
 		String userid
 		String code
-		String sessionToken
 	}
 
 	static class AuthResponse{
