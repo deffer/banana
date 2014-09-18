@@ -17,6 +17,7 @@
 	</script>
 
 	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+	<!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"-->
 
 	<%--stylesheet includes --%>
 	<jawr:style src="/bundles/all.css"/>
@@ -32,6 +33,15 @@
 	<jawr:script src="/bundles/banana-app.js"/>
 
 	<title>iBookmarks</title>
+
+	<script type="text/ng-template" id="/alert.html">
+		<div class="alert" ng-class="['alert-' + (alert.type || 'warning'), alert.closeable ? 'alert-dismissable' : null]" role="alert">
+			<button ng-show="alert.closable" type="button" class="close" data-dismiss="alert" ng-click="closeClick()">&times;</button>
+			<strong> {{alert.message}} </strong>
+			<span ng-show="alert.details">{{alert.details}}</span>
+		</div>
+	</script>
+
 </head>
 
 <body>
@@ -58,6 +68,11 @@
 			<button class="btn" ng-click="logOut()">Log out</button>
 		</div>
 	</div>
+
+	<div ng-controller="iBookmarks.app.AlertsCtrl">
+		<bm-alert ng-repeat="alert in alerts track by $index" alert-object="alert" on-alert-close="closeAlertCallback($index)"></bm-alert>
+	</div>
+
 
 	<div ng-controller="iBookmarks.app.BookmarksCtrl" name="leftColumn">
 

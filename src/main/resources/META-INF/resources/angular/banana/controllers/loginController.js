@@ -1,5 +1,5 @@
-iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backend', 'mainService',
-	function($scope, $http, $rootScope, $window, backend, mainService) {
+iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backend', 'mainService', 'alertsService',
+	function($scope, $http, $rootScope, $window, backend, mainService, alertsService) {
 
 		$scope.sessionToken = iBookmarks.sessionToken; // TODO instead of additional token, just use xsrfHeaderName and xsrfCookieName
 
@@ -18,8 +18,10 @@ iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backen
 					console.log("Profile loaded. User id: "+profile.id); // ex. 102477976455620241458
 					// connect server. server will upgrade the code into access token
 					backend.authenticate(profile.id, $scope.authnInfo.code, $scope.sessionToken)
-						.then(function(){
+						.then(function(success){
 							$rootScope.$broadcast('successSignIn', []);
+						}, function(rejection){
+							alertsService.addFatal("Unable to securely connect to server. Please try again later (refresh).");
 						});
 				});
 			});

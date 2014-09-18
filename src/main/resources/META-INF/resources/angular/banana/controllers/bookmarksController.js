@@ -1,5 +1,5 @@
-iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'uploadManager', 'backend', 'bookmarksShuffle', 'mainService',
-	function($scope, $http, $rootScope, $window, uploadManager, backend, bookmarksShuffle, mainService) {
+iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'uploadManager', 'backend', 'bookmarksShuffle', 'mainService', 'alertsService',
+	function($scope, $http, $rootScope, $window, uploadManager, backend, bookmarksShuffle, mainService, alertsService) {
 
 	// div's visibility flags
 	$scope.addBookmarkCollapsed = true;
