@@ -2,24 +2,47 @@ iBookmarks.app.factory('alertsService', function () {
 	var service = {
 		listeners: [],
 		alerts: [],
+
+		/*
+		 --------------------------------------------------------------
+		   Bunch of helper methods
+		 --------------------------------------------------------------
+		 */
 		addListener: function(listener){
 			service.listeners.push(listener);
 		},
-		addWarning: function(message){
-			service.addAlert({message: message, type: 'warning', closable: true});
+		addWarning: function(message, details){
+			service._addClosable(message, details, 'warning');
 		},
-		addSuccess: function(message){
-			service.addAlert({message: message, type: 'success', closable: true});
+		addSuccess: function(message, details){
+			service._addClosable(message, details, 'success');
 		},
-		addInfo: function(message){
-			service.addAlert({message: message, type: 'info', closable: true});
+		addInfo: function(message, details){
+			service._addClosable(message, details, 'info');
 		},
-		addError: function(message){
-			service.addAlert({message: message, type: 'error', closable: true});
+		addError: function(message, details){
+			service._addClosable(message, details, 'error');
 		},
-		addFatal: function(message){
-			service.addAlert({message: message, type: 'error'});
+		addFatal: function(message, details){
+			var alert = {message: message, type: 'error'};
+			if (details)
+				alert.details = details;
+			service.addAlert(alert);
 		},
+
+		_addClosable: function(message, details, type){
+			var result = {message: message, type: type, closeable: true};
+			if (details){
+				result.details = details;
+			}
+			service.addAlert(result);
+		},
+
+		/*
+		 --------------------------------------------------------------
+			Methods here
+		 --------------------------------------------------------------
+		 */
 		addAlert: function(alert){
 			service.alerts.push(alert);
 			_.each(service.listeners, function(listener){

@@ -16,18 +16,15 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 			return promise;
 		},
 
-		getBookmarks: function () {
+		getBookmarks: function (sessionToken) {
 			var defer = $q.defer();
 			var promise = defer.promise;
-			$http({method: 'POST', url: backend.GET_BOOKMARKS_URL}).
+			$http({method: 'POST', url: backend.GET_BOOKMARKS_URL,
+				data: {sessionToken: sessionToken}}).
 				success(function(data, status, headers, config) {
-					// this callback will be called asynchronously
-					// when the response is available
 					defer.resolve(data);
 				}).
 				error(function(data, status, headers, config) {
-					// called asynchronously if an error occurs
-					// or server returns response with an error status.
 					defer.reject({});
 				});
 			return promise;

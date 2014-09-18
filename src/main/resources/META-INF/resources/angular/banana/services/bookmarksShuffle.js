@@ -137,20 +137,21 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 		},
 
-        getExampleStore : function(){
-            var example = [
-                    {url:"http://stackoverflow.com/questions/101268/hidden-features-of-python", title: "Hidden features of python", id: 1, labels: ["Development"]},
-       				{url: "https://people.gnome.org/~federico/news-2008-11.html#pushing-and-pulling-with-git-1", title: "Pushing and pulling with git", id: 2, labels: ["Development"]},
-       				{url: "http://nealford.com/memeagora/2013/01/22/why_everyone_eventually_hates_maven.html", title: "Why everyone eventually hates maven", id: 3, labels: ["Development"]},
-       				{url: "http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol", title: "SRP protocol", id: 4, labels: ["Development"]},
-       				{url: "http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf", title: "Netcat cheat sheet", id: 5, labels: ["Development", "Unix"]},
-       				{url: "http://clippy.in/b/YJLM9W", title: "Favorite Linux Commands", id: 11, labels: ["Unix"]},
-       	   			{url: "https://gist.github.com/nifl/1178878", title: "Grok vi", id: 12, labels: ["Unix"]}];
-	        var result = {all:example, filterOn:false};
-            service.filterByPartial(result, []);
-	        service.updateUrlMap(result);
-	        return result;
-        }
+		getExampleStore : function(){
+				var example = [
+				{url:"http://stackoverflow.com/questions/101268/hidden-features-of-python", title: "Hidden features of python", id: 1, labels: ["Development"]},
+				{url: "https://people.gnome.org/~federico/news-2008-11.html#pushing-and-pulling-with-git-1", title: "Pushing and pulling with git", id: 2, labels: ["Development"]},
+				{url: "http://justinhileman.info/article/git-pretty/", title: "How to git pretty", id: 3, labels: ["Development"]},
+				{url: "http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol", title: "Secure Remote Password protocol", id: 4, labels: ["Development"]},
+				{url: "http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf", title: "Netcat cheat sheet", id: 5, labels: ["Development", "Unix"]},
+				{url: "http://nealford.com/memeagora/2013/01/22/why_everyone_eventually_hates_maven.html", title: "Why everyone eventually hates maven", id: 6, labels: ["Development"]},
+				{url: "http://clippy.in/b/YJLM9W", title: "Favorite Linux Commands", id: 11, labels: ["Unix"]},
+				{url: "https://gist.github.com/nifl/1178878", title: "The 'Zen' of vi", id: 12, labels: ["Unix"]}];
+			var result = {all:example, filterOn:false};
+			service.filterByPartial(result, []);
+			service.updateUrlMap(result);
+			return result;
+		}
 	};
 	return service;
 });

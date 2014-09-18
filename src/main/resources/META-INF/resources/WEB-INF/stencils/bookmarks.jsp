@@ -36,9 +36,11 @@
 
 	<script type="text/ng-template" id="/alert.html">
 		<div class="alert" ng-class="['alert-' + (alert.type || 'warning'), alert.closeable ? 'alert-dismissable' : null]" role="alert">
-			<button ng-show="alert.closable" type="button" class="close" data-dismiss="alert" ng-click="closeClick()">&times;</button>
+			<button ng-show="alert.closeable" type="button" class="close" data-dismiss="alert" ng-click="closeClick()">&times;</button>
 			<strong> {{alert.message}} </strong>
-			<span ng-show="alert.details">{{alert.details}}</span>
+			<ul>
+				<li ng-repeat="line in alert.details">{{line}}</li>
+			</ul>
 		</div>
 	</script>
 

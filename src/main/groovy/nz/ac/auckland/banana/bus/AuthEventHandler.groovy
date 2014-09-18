@@ -4,10 +4,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse
 
-
-/*import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse*/
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.JsonFactory
@@ -22,7 +18,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
- *
+ * author: Irina Benediktovich - http://plus.google.com/+IrinaBenediktovich
  */
 @UniversityComponent
 @Event(name="gplusauth", namespace = "bookmarks")
@@ -53,11 +49,11 @@ class AuthEventHandler{
 
 		if (requestType.sessionToken != userStore.getSessionToken()){
 			log.error("Session token wrong!!! Current token is ${userStore.getSessionToken()}")
-			// TODO do NOT authenticate
+			throw new CapturedException("Unauthorised request: token error")
 		}
 		String id = askGoogle4Token(requestType.code)
 		if (id != requestType.userid){
-
+			throw new CapturedException("Unauthorised request: identities mismatch")
 		}
 		userStore.setUserId(requestType.userid)
 		return new AuthResponse(message: "ok")

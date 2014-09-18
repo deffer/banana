@@ -1,6 +1,6 @@
 <div name="uploadBlock span4" collapse="uploadFileCollapsed">
     <div class="alert alert-info">
-        You can manually download your google bookmarks from <a href="www.google.com/bookmarks/?output=xml">www.google.com/bookmarks/?output=xml</a>
+        Please select XML or JSON file with your bookmarks. For example <a href="https://www.google.com/bookmarks/?output=xml" target="_blank">www.google.com/bookmarks/?output=xml</a>
     </div>
     <div class="control-group">
         <div class="controls">

@@ -21,7 +21,7 @@ iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backen
 						.then(function(success){
 							$rootScope.$broadcast('successSignIn', []);
 						}, function(rejection){
-							alertsService.addFatal("Unable to securely connect to server. Please try again later (refresh).");
+							alertsService.addFatal("Unable to securely connect to server. Please close the tab (browser) and try again");
 						});
 				});
 			});

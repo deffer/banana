@@ -10,7 +10,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	$scope.bookmarkStore = mainService.bookmarkStore;
 
 
-	$scope.selectedFolder =  bookmarksShuffle.folderAll //"Development";
+	$scope.selectedFolder =  bookmarksShuffle.folderAll; //"Development";
 	$scope.selectedBookmarks = [];
 
 	$scope.filterInput = "";
@@ -54,9 +54,15 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 
 	$scope.getBookmarksFromServer = function () {
-		backend.getBookmarks().then(function (results) {
+		backend.getBookmarks(mainService.sessionToken).then(function (results) {
 			if (_.isUndefined(results) || _.isEmpty(results) || _.isNull(results) || results == 'null') {
 				console.log("Empty response. IGNORE.");
+				alertsService.addInfo("You don't have any saved bookmarks.",
+					[
+						"You can browse example bookmarks or start adding new.",
+						"To import from your own google bookmarks XML file, go to 'Edit' -> 'Import from file'",
+						"You can also use this import with the JSON file you previously exported"
+					]);
 				return;
 			}
 			console.log("Updating folders");
@@ -67,6 +73,8 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 				? $scope.bookmarkStore.foldersList[0] : undefined; // TODO select all if nothing
 			console.log("Selected folder is "+$scope.selectedFolder.id);
 			$scope.uploadFileCollapsed = true;
+		}, function(rejection){
+			alertsService.addError("Unable to load bookmarks from server. Please try again later")
 		});
 	};
 

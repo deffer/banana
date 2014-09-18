@@ -3,7 +3,7 @@ iBookmarks.app.factory('mainService', function(backend, bookmarksShuffle){
 		// data shared between all controllers
 		bookmarkStore : bookmarksShuffle.getExampleStore(),
 		authnInfo: {},
-		sessionToken : undefined,
+		sessionToken : iBookmarks.sessionToken,
 
 		convertFromServer : function(data){
 			bookmarksShuffle.convertFromServer(data, service.bookmarkStore);
