@@ -44,8 +44,9 @@ class BookmarksStore {
 
 	public String saveUserBookmark(def userId, Map data){
 		startTransaction()
-		persistBookmark(userId.toString(), data)
+		String id = persistBookmark(userId.toString(), data)
 		commit()
+		return id
 	}
 
 
@@ -70,6 +71,9 @@ class BookmarksStore {
 		data.timestamp = System.currentTimeMillis()
 		if (!data.title)
 			data.title = data.url
+		if (data.labels instanceof String){
+			data.labels = data.labels.tokenize(',').findResults {it.trim()}
+		}
 		return data
 	}
 

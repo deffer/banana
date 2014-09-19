@@ -4,7 +4,7 @@
 
         <div name="quickEditBlock1" style="position: relative; overflow: hidden;">
 
-            <div class="alert alert-warning" ng-show="inputUrl == suggestedBookmark.url">
+            <div class="alert alert-warning" ng-show="inputUrl == suggestedBookmark.url && !currentInputId">
                 This url is already bookmarked as '{{suggestedBookmark.shortTitle}}' in '{{suggestedBookmark.listFolders}}'.
                 Do you want to modify existing bookmark?
                 <button class="btn btn-warning" ng-click="populateSuggested()">Modify...</button>

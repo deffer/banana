@@ -22,8 +22,9 @@ class RestApiBookmarkStencil implements Stencil{
 	SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm")
 
 	void render(HttpServletRequest request, HttpServletResponse response, Map<String, String> pathParameters) {
-		response.setHeader("Content-Type", "application/json");
 		String action = pathParameters['action'].toLowerCase()
+		response.setHeader("Content-Type", "application/json");
+
 		if (action in ['get', 'download']){
 			def data
 			String currentUser = userStore.userId
@@ -41,6 +42,7 @@ class RestApiBookmarkStencil implements Stencil{
 			}
 
 			response.writer.write(JacksonHelper.serialize(data));
+
 		}else{
 			response.writer.write('"a":"b"')
 		}

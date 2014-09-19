@@ -1,7 +1,8 @@
 iBookmarks.app.factory('backend', function ($q, $http) {
 
 	var backend = {
-		GET_BOOKMARKS_URL : 'rest/bookmarks/download',
+		DOWNLOAD_BOOKMARKS_URL : 'rest/bookmarks/download',
+		GET_BOOKMARKS_URL : 'rest/bookmarks/get',
 
 		callUtils: function (action, input, input2) {
 			var defer = $q.defer();

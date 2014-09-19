@@ -1,4 +1,4 @@
-iBookmarks.app.factory('alertsService', function () {
+iBookmarks.app.factory('alertsService', function ($timeout) {
 	var service = {
 		listeners: [],
 		alerts: [],
@@ -30,6 +30,15 @@ iBookmarks.app.factory('alertsService', function () {
 			service.addAlert(alert);
 		},
 
+		/**
+		 * This will be auto dismissed after 4 seconds
+		 * @param message
+		 */
+		addNotice: function(message){
+			var alert = {message: message, type: 'success'};
+			service.addAlert(alert, true);
+		},
+
 		_addClosable: function(message, details, type){
 			var result = {message: message, type: type, closeable: true};
 			if (details){
@@ -43,11 +52,18 @@ iBookmarks.app.factory('alertsService', function () {
 			Methods here
 		 --------------------------------------------------------------
 		 */
-		addAlert: function(alert){
+		addAlert: function(alert, autodismiss){
 			service.alerts.push(alert);
 			_.each(service.listeners, function(listener){
-				 listener(alert);
+				listener(alert);
 			});
+			if (autodismiss){
+			   $timeout.delay(4000, function(){
+				   // TODO fade-out instead of just dismiss
+					var idx = service.alerts.indexOf(alert);
+				   service.dismiss(idx);
+			   });
+			}
 		},
 
 		dismiss: function(idx) {
