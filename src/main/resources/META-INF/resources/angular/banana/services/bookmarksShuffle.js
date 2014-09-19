@@ -55,11 +55,9 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 						labels = b.labels;
 					}
 					_.each(labels, function(label){
-						//bookmarkStore.folders[label].push(_.extend({}, b, {label: label}));
 						bookmarkStore.folders[label].push(b);
 					});
 					// also add to all
-					//bookmarkStore.folders[service.folderAll.id].push(_.extend({}, b));
 					bookmarkStore.folders[service.folderAll.id].push(b);
 				}
 			});
@@ -90,7 +88,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 				folderEntry.count = items.length;
 				folderEntry.name = folderEntry.originalName+" ("+folderEntry.count+")"; // <--- label display name
-				//console.log("Found " + items.length + " in " + label);
 			});
 
             return bookmarkStore;
@@ -143,6 +140,11 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		},
 
 		/**
+		 * If its edit, find and change existing entry. Also will need to change folders (if labels changed)
+		 *    and url map (if url changed)
+		 *
+		 * If its edit and folder
+		 *
 		 * Returns true if bookmark matches current filter
 		 * @param data
 		 * @param existing
@@ -152,11 +154,15 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			var b = existing ? existing : data;
 			var id = b.id;
 
+			// update url maps if necessary
 			if (existing && existing.url != data.url){
 				service.removeFromListById(bookmarkStore.urlsMap[existing.url], id);
 			}
-
-			// TODO update urlMap. create entry if necessary
+			if (_.isUndefined(bookmarkStore.urlsMap[data.url])){
+				bookmarkStore.urlsMap[data.url] = [b];
+			}else{
+				bookmarkStore.urlsMap[data.url].push(b);
+			}
 
 			if (existing && _.difference(existing.labels, data.labels)){
 				// TODO change folders
