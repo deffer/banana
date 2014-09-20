@@ -5,6 +5,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 		convertFromServer: function(bookmarks, bookmarkStore) {
 			bookmarkStore.filterOn = false;
+			bookmarkStore.filter = null;
 
 			bookmarkStore.all = bookmarks;
 			service.filterByPartial(bookmarkStore, []);
@@ -16,7 +17,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		 * Expects bookmarkStore.all to contain all bookmarks. Each bookmark is a map:
 		 *   {id: .., url: .., title: .., labels: []}
 		 *
-		 * Labels and folders means the same. (Bookmark has labels => bookmark exist in those folders).
+		 * Labels and folders mean the same. (Bookmark has labels => bookmark exist in those folders).
 		 *
 		 * Will populate next fields:
 		 *   -foldersList = [{id: label, originalName: label, count: 0}, {}, ...]
@@ -25,7 +26,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		 *   -displayFolders = same as foldersList + All + Unlabelled.
 		 *          This is a content of Folders drop down.
 		 *   -folders = MAP: label -> [ {}, {}, {}, ... ] where {} is a bookmark. only those matching filter.
-		 *   -unlabelled = [ {}, {}, {}, ... ] where {} is a bookmark.
 		 *   -urlsMap = MAP: url -> [{}, ...] where {} is a bookmark.
 		 * @param bookmarkStore
 		 * @param filter array of partials. If any of the partials matches any part of url or title, its a match!
@@ -76,7 +76,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				else
 					return a.originalName.localeCompare(b.originalName)
 			});
-			//bookmarkStore.unlabelled = bookmarkStore.folders[service.folderUnlabelled.id];
 
 
 			console.log(bookmarkStore.displayFolders);
@@ -141,9 +140,8 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 		/**
 		 * If its edit, find and change existing entry. Also will need to change folders (if labels changed)
-		 *    and url map (if url changed)
+		 *    and url map (if url changed). Don't forget to take care of Unlabelled folder too.
 		 *
-		 * If its edit and folder
 		 *
 		 * Returns true if bookmark matches current filter
 		 * @param data
@@ -153,6 +151,18 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		updateAfterBookmarkChanged: function(data, existing, bookmarkStore){
 			var b = existing ? existing : data;
 			var id = b.id;
+
+			var matchesFilter = true;
+			if (bookmarkStore.filterOn){
+				matchesFilter = service.matchesFilter(b, bookmarkStore.filter);
+			}
+
+			// ensure folders are initialized with empty array
+			_.each(data.labels, function(label){
+				if (_.isUndefined(bookmarkStore.folders[label])){
+					bookmarkStore.folders[label] = [];
+				}
+			});
 
 			// update url maps if necessary
 			if (existing && existing.url != data.url){
@@ -164,42 +174,67 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				bookmarkStore.urlsMap[data.url].push(b);
 			}
 
+			// update folders
 			if (existing && _.difference(existing.labels, data.labels)){
-				// TODO change folders
-				// TODO recalculate size's of folderList, folderAll (and Unlabelled) for old and new folders
-			}else if (!existing){
-				// TODO add to folders
-				// TODO recalculate size's of folderList, folderAll (and Unlabelled)
+				// remove from folders
+				_.each(existing.labels, function(label){
+					if (!_.contains(data.labels, label)){
+						service.removeFromListById(bookmarkStore.folders[label], id);
+						service._updateFoldersCount(label, bookmarkStore); // decrease foldersList count
+					}
+				});
 			}
 
+			_.each(data.labels, function(label){
+				if (!existing || (existing && !_.contains(existing.labels, label))){
+					if (matchesFilter){
+						bookmarkStore.folders[label].push(b);
+						service._updateFoldersCount(label, bookmarkStore); // increase foldersList count
+					}
+				}
+			});
+
+			// TODO if data.labels empty and (folders changed or its new entry), need to add to unlabelled
+			// TODO if existing.labels empty and folders changed, remove from unlabelled.
+
+			// update bookmark itself
 			if (existing){
 				b.title = data.title;
 				b.url = data.url;
 				b.labels = data.labels;
+			}else{
+				bookmarkStore.all.push(b);
 			}
 
-			var result = true;
-			if (bookmarkStore.filterOn){
-				result = service.matchesFilter(b, bookmarkStore.filter);
-			}
-			return result;
+			return matchesFilter;
 		},
 
 		updateAfterBookmarkDeleted: function(b, bookmarkStore){
 			var id = b.id;
 			if (b.labels && b.labels.length>0){
 				_.each(b.labels, function(label){
-					// TODO recalculate folders' size
 					service.removeFromListById(bookmarkStore.folders[label], id);
+					service._updateFoldersCount(label, bookmarkStore);
 				});
 			}else{
-				// TODO recalculate folder's size
 				service.removeFromListById(bookmarkStore.folders[service.folderUnlabelled.id], id);
+				service._updateFoldersCount(service.folderUnlabelled.id, bookmarkStore);
 			}
-			// TODO recalculate folder's size
 			service.removeFromListById(bookmarkStore.folders[service.folderAll.id], id);
+			service._updateFoldersCount(service.folderAll.id, bookmarkStore);
 
 			service.removeFromListById(bookmarkStore.urlsMap[b.url], id);
+			service.removeFromListById(bookmarkStore.all, id);
+		},
+
+		_updateFoldersCount: function(label, bookmarkStore) {
+			var folderInfo = _.find(bookmarkStore.displayFolders, function(it){return it.id == label});
+			if (folderInfo){
+				folderInfo.count = bookmarkStore.folders[label].length;
+				if (folderInfo.count == 0 && label == service.folderUnlabelled.id){
+					service.removeFromListById(bookmarkStore.displayFolders, label);
+				}
+			}
 		},
 
 		removeFromListById: function(list, id){

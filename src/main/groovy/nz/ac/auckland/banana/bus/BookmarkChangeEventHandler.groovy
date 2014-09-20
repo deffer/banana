@@ -15,6 +15,8 @@ import javax.inject.Inject
 class BookmarkChangeEventHandler{
 	private static final Logger log = LoggerFactory.getLogger(BookmarkChangeEventHandler)
 
+	boolean offline = true
+
 	@Inject UserStore userStore
 	@Inject BookmarksStore bookmarksStore
 
@@ -32,12 +34,13 @@ class BookmarkChangeEventHandler{
 			bookmarksStore.prepareBookmark(bookmark)
 
 			String currentUser = userStore.userId
-			log.debug("Saving for: User $currentUser, session ${userStore.sessionId}")
-
-			if (currentUser){
-				responseId = bookmarksStore.saveUserBookmark(currentUser, bookmark)
-			}else{
-				responseId = bookmarksStore.saveSessionBookmark(userStore.sessionId, bookmark)
+			log.debug("Saving for: User $currentUser, session ${userStore.sessionId}, labels ${bookmark.labels}")
+			if (!offline){
+				if (currentUser){
+					responseId = bookmarksStore.saveUserBookmark(currentUser, bookmark)
+				}else{
+					responseId = bookmarksStore.saveSessionBookmark(userStore.sessionId, bookmark)
+				}
 			}
 			return new BookmarkChangeResponse(id: responseId, title: bookmark.title, url: bookmark.url, labels: bookmark.labels)
 		}
