@@ -142,6 +142,8 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 		bookmarksShuffle.filterByPartial($scope.bookmarkStore, filter);
 		$scope.bookmarkStore.filterOn = true;
 		$scope.bookmarkStore.filter = filter;
+
+		$scope.setSelectedFolder(bookmarksShuffle.getFolderById($scope.selectedFolder.id, $scope.bookmarkStore));
 		$scope.selectedBookmarks = $scope.bookmarkStore.folders[$scope.selectedFolder.id]; // refresh current
 	};
 
@@ -149,6 +151,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 		$scope.filterInput = "";
 		if ($scope.bookmarkStore.filterOn){
 			bookmarksShuffle.clearFilter($scope.bookmarkStore);
+			$scope.setSelectedFolder(bookmarksShuffle.getFolderById($scope.selectedFolder.id, $scope.bookmarkStore));
 			$scope.selectedBookmarks = $scope.bookmarkStore.folders[$scope.selectedFolder.id]; // refresh current
 		}
 	};

@@ -131,7 +131,7 @@
 				<ul class="dropdown-menu">
 					<li ng-repeat="folder in bookmarkStore.displayFolders" class="cct">
 						<a class="cct" href="" ng-click="setSelectedFolder(folder)"
-						   ng-class="{boldit: (bookmarkStore.bookmarks[folder.id].length>0 && bookmarkStore.filterOn)}">
+						   ng-class="{boldit: (bookmarkStore.folders[folder.id].length>0 && bookmarkStore.filterOn)}">
 							{{folder.name}}
 						</a>
 					</li>

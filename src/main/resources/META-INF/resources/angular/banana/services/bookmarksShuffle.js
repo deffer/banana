@@ -78,8 +78,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			});
 
 
-			console.log(bookmarkStore.displayFolders);
-
 			// update labels with total count in each folder
 			_.each(bookmarkStore.displayFolders, function (folderEntry) {
 				var label = folderEntry.id;
@@ -88,6 +86,8 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				folderEntry.count = items.length;
 				folderEntry.name = folderEntry.originalName+" ("+folderEntry.count+")"; // <--- label display name
 			});
+
+			console.log(bookmarkStore.displayFolders);
 
             return bookmarkStore;
 		},
@@ -227,8 +227,12 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			service.removeFromListById(bookmarkStore.all, id);
 		},
 
+		getFolderById: function(id, bookmarkStore){
+			return _.find(bookmarkStore.displayFolders, function(it){return it.id == id});
+		},
+
 		_updateFoldersCount: function(label, bookmarkStore) {
-			var folderInfo = _.find(bookmarkStore.displayFolders, function(it){return it.id == label});
+			var folderInfo = service.getFolderById(label);
 			if (folderInfo){
 				folderInfo.count = bookmarkStore.folders[label].length;
 				if (folderInfo.count == 0 && label == service.folderUnlabelled.id){
