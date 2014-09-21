@@ -10,7 +10,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	$scope.bookmarkStore = mainService.bookmarkStore;
 
 
-	$scope.selectedFolder =  bookmarksShuffle.folderAll; //"Development";
+	$scope.selectedFolder =  bookmarksShuffle.folderAll;
 	$scope.selectedBookmarks = [];
 
 	$scope.filterInput = "";
@@ -51,13 +51,13 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 			if ($scope.suggestedBookmark && ($scope.suggestedBookmark.id == $scope.currentInputId))
 				modifying = $scope.suggestedBookmark;
 			else
-				modifying = bookmarksShuffle.getBookmark($scope.currentInputId, $scope.bookmarkStore);
+				modifying = bookmarksShuffle.getBookmark($scope.currentInputId);
 		}
 
 		backend.saveBookmark($scope.inputTitle, $scope.inputUrl, $scope.inputLabels, $scope.currentInputId).then(
 			function(data){
 				console.log(data);
-				var match = bookmarksShuffle.updateAfterBookmarkChanged(data, modifying, $scope.bookmarkStore);
+				var match = bookmarksShuffle.updateAfterBookmarkChanged(data, modifying);
 				if (!match){
 					alertsService.addInfo("Your bookmark has been saved",
 						["Please note that you wouldn't see this bookmark because of your current filter"]);
@@ -109,7 +109,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 			return;
 		}
 		console.log("Reacting on change "+$scope.inputUrl);
-		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.bookmarkStore, $scope.inputUrl);
+		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl);
 	});
 
 	$scope.populateSuggested = function(){
@@ -123,7 +123,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 		$scope.currentInputId = null;
 		$scope.inputUrl = "";
 		$scope.inputTitle = "";
-		$scope.inputLabels = null;
+		$scope.inputLabels = [];
 		$scope.suggestedBookmark = null;
 
 		$scope.addBookmarkCollapsed=true;
@@ -139,11 +139,11 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 	$scope.filterAction = function(){
 		var filter = $scope.filterInput.split(" ");
-		bookmarksShuffle.filterByPartial($scope.bookmarkStore, filter);
+		bookmarksShuffle.filterByPartial(filter);
 		$scope.bookmarkStore.filterOn = true;
 		$scope.bookmarkStore.filter = filter;
 
-		$scope.setSelectedFolder(bookmarksShuffle.getFolderById($scope.selectedFolder.id, $scope.bookmarkStore));
+		$scope.setSelectedFolder(bookmarksShuffle.getFolderById($scope.selectedFolder.id));
 		$scope.selectedBookmarks = $scope.bookmarkStore.folders[$scope.selectedFolder.id]; // refresh current
 	};
 
@@ -151,7 +151,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 		$scope.filterInput = "";
 		if ($scope.bookmarkStore.filterOn){
 			bookmarksShuffle.clearFilter($scope.bookmarkStore);
-			$scope.setSelectedFolder(bookmarksShuffle.getFolderById($scope.selectedFolder.id, $scope.bookmarkStore));
+			$scope.setSelectedFolder(bookmarksShuffle.getFolderById($scope.selectedFolder.id));
 			$scope.selectedBookmarks = $scope.bookmarkStore.folders[$scope.selectedFolder.id]; // refresh current
 		}
 	};

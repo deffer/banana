@@ -1,15 +1,16 @@
 iBookmarks.app.factory('bookmarksShuffle', function (){
+	var bookmarkStore = {filterOn:false};
 	var service = {
 		folderUnlabelled : {id: 'App123Unlabelled', originalName: 'Unlabelled', count: 0},
 		folderAll : {id: 'App123AllLabels', originalName: 'All', count: 0},
 
-		convertFromServer: function(bookmarks, bookmarkStore) {
+		convertFromServer: function(bookmarks) {
 			bookmarkStore.filterOn = false;
 			bookmarkStore.filter = null;
 
 			bookmarkStore.all = bookmarks;
-			service.filterByPartial(bookmarkStore, []);
-			service.updateUrlMap(bookmarkStore); // create urls map for faster access
+			service.filterByPartial([]);
+			service.updateUrlMap(); // create urls map for faster access
 			return bookmarkStore;
 		},
 
@@ -27,11 +28,10 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		 *          This is a content of Folders drop down.
 		 *   -folders = MAP: label -> [ {}, {}, {}, ... ] where {} is a bookmark. only those matching filter.
 		 *   -urlsMap = MAP: url -> [{}, ...] where {} is a bookmark.
-		 * @param bookmarkStore
 		 * @param filter array of partials. If any of the partials matches any part of url or title, its a match!
 		 *   Empty value means no filter, just show all bookmarks.
 		 */
-		filterByPartial: function(bookmarkStore, filter){
+		filterByPartial: function(filter){
 
 			bookmarkStore.foldersList = [];
 			bookmarkStore.folders = {};
@@ -93,7 +93,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		},
 
 		// create urls map for faster access
-		updateUrlMap : function(bookmarkStore){
+		updateUrlMap : function(){
 			bookmarkStore.urlsMap = {};
 			_.each(_.pluck(bookmarkStore.all, 'url'), function(url){bookmarkStore.urlsMap[url] = []});
 			_.each(bookmarkStore.all, function (bookmark) {
@@ -105,14 +105,21 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			return bookmarkStore;
 		},
 
-		clearFilter : function(bookmarkStore){
+		getFolderById: function(id){
+			return _.find(bookmarkStore.displayFolders, function(it){return it.id == id});
+		},
+		getBookmark: function(id){
+			return _.find(bookmarkStore.all, function (b) { return b.id = id;});
+		},
+
+		clearFilter : function(){
 			if (bookmarkStore.filterOn)
-				service.filterByPartial(bookmarkStore, []);
+				service.filterByPartial([]);
 			bookmarkStore.filterOn = false;
 			bookmarkStore.filter = undefined;
 		},
 
-		checkBookmarkExists : function(bookmarkStore, inputUrl){
+		checkBookmarkExists : function(inputUrl){
 			var urlsMap = bookmarkStore.urlsMap;
 			if (inputUrl && urlsMap[inputUrl]){
 				var b = urlsMap[inputUrl][0]; // get first bookmarks that match entered url
@@ -123,8 +130,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				};
 				console.log("Suggesting...");
 				console.log(result);
-				return result;  //  <-------------------- RETURN
-
+				return result;
 			}
 			return null;
 		},
@@ -146,9 +152,8 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		 * Returns true if bookmark matches current filter
 		 * @param data
 		 * @param existing
-		 * @param bookmarkStore
 		 */
-		updateAfterBookmarkChanged: function(data, existing, bookmarkStore){
+		updateAfterBookmarkChanged: function(data, existing){
 			var b = existing ? existing : data;
 			var id = b.id;
 
@@ -180,7 +185,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				_.each(existing.labels, function(label){
 					if (!_.contains(data.labels, label)){
 						service.removeFromListById(bookmarkStore.folders[label], id);
-						service._updateFoldersCount(label, bookmarkStore); // decrease foldersList count
+						service._updateFoldersCount(label); // decrease foldersList count
 					}
 				});
 			}
@@ -189,7 +194,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				if (!existing || (existing && !_.contains(existing.labels, label))){
 					if (matchesFilter){
 						bookmarkStore.folders[label].push(b);
-						service._updateFoldersCount(label, bookmarkStore); // increase foldersList count
+						service._updateFoldersCount(label); // increase foldersList count
 					}
 				}
 			});
@@ -209,29 +214,26 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			return matchesFilter;
 		},
 
-		updateAfterBookmarkDeleted: function(b, bookmarkStore){
+		updateAfterBookmarkDeleted: function(b){
 			var id = b.id;
 			if (b.labels && b.labels.length>0){
 				_.each(b.labels, function(label){
 					service.removeFromListById(bookmarkStore.folders[label], id);
-					service._updateFoldersCount(label, bookmarkStore);
+					service._updateFoldersCount(label);
 				});
 			}else{
 				service.removeFromListById(bookmarkStore.folders[service.folderUnlabelled.id], id);
-				service._updateFoldersCount(service.folderUnlabelled.id, bookmarkStore);
+				service._updateFoldersCount(service.folderUnlabelled.id);
 			}
 			service.removeFromListById(bookmarkStore.folders[service.folderAll.id], id);
-			service._updateFoldersCount(service.folderAll.id, bookmarkStore);
+			service._updateFoldersCount(service.folderAll.id);
 
 			service.removeFromListById(bookmarkStore.urlsMap[b.url], id);
 			service.removeFromListById(bookmarkStore.all, id);
 		},
 
-		getFolderById: function(id, bookmarkStore){
-			return _.find(bookmarkStore.displayFolders, function(it){return it.id == id});
-		},
 
-		_updateFoldersCount: function(label, bookmarkStore) {
+		_updateFoldersCount: function(label) {
 			var folderInfo = service.getFolderById(label);
 			if (folderInfo){
 				folderInfo.count = bookmarkStore.folders[label].length;
@@ -249,12 +251,8 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			list.splice(idx, 1);
 		},
 
-		getBookmark: function(id, bookmarkStore){
-			return _.find(bookmarkStore.all, function (b) { return b.id = id;});
-		},
-
-		getExampleStore : function(){
-				var example = [
+		useExampleStore : function(){
+			bookmarkStore.all = [
 				{url:"http://stackoverflow.com/questions/101268/hidden-features-of-python", title: "Hidden features of python", id: 1, labels: ["Development"]},
 				{url: "https://people.gnome.org/~federico/news-2008-11.html#pushing-and-pulling-with-git-1", title: "Pushing and pulling with git", id: 2, labels: ["Development"]},
 				{url: "http://justinhileman.info/article/git-pretty/", title: "How to git pretty", id: 3, labels: ["Development"]},
@@ -263,10 +261,10 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				{url: "http://nealford.com/memeagora/2013/01/22/why_everyone_eventually_hates_maven.html", title: "Why everyone eventually hates maven", id: 6, labels: ["Development"]},
 				{url: "http://clippy.in/b/YJLM9W", title: "Favorite Linux Commands", id: 11, labels: ["Unix"]},
 				{url: "https://gist.github.com/nifl/1178878", title: "The 'Zen' of vi", id: 12, labels: ["Unix"]}];
-			var result = {all:example, filterOn:false};
-			service.filterByPartial(result, []);
-			service.updateUrlMap(result);
-			return result;
+
+			service.filterByPartial([]);
+			service.updateUrlMap();
+			return bookmarkStore;
 		}
 	};
 	return service;

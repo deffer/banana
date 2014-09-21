@@ -58,11 +58,11 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 				listener(alert);
 			});
 			if (autodismiss){
-			   $timeout.delay(4000, function(){
+			   $timeout.(function(){
 				   // TODO fade-out instead of just dismiss
 					var idx = service.alerts.indexOf(alert);
 				   service.dismiss(idx);
-			   });
+			   }, 4000);
 			}
 		},
 
