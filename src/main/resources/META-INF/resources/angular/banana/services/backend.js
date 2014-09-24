@@ -20,7 +20,7 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 		getBookmarks: function (sessionToken) {
 			var defer = $q.defer();
 			var promise = defer.promise;
-			$http({method: 'POST', url: backend.GET_BOOKMARKS_URL,
+			$http({method: 'POST', url: UOA.endpoints.bookmarks.get,
 				data: {sessionToken: sessionToken}}).
 				success(function(data, status, headers, config) {
 					defer.resolve(data);

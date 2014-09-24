@@ -58,7 +58,7 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 				listener(alert);
 			});
 			if (autodismiss){
-			   $timeout.(function(){
+			   $timeout(function(){
 				   // TODO fade-out instead of just dismiss
 					var idx = service.alerts.indexOf(alert);
 				   service.dismiss(idx);

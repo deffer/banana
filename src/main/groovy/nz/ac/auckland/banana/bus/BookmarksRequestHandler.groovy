@@ -11,7 +11,9 @@ import nz.ac.auckland.banana.services.BookmarksStore
 import nz.ac.auckland.banana.services.UserStore
 import nz.ac.auckland.common.config.ConfigKey
 import nz.ac.auckland.common.stereotypes.UniversityComponent
+import nz.ac.auckland.syllabus.SyllabusContext
 import nz.ac.auckland.syllabus.events.Event
+import nz.ac.auckland.syllabus.http.HttpSyllabusContext
 import nz.ac.auckland.util.JacksonHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,7 +31,13 @@ class BookmarksRequestHandler {
 	@Inject UserStore userStore
 	@Inject BookmarksStore bookmarksStore
 
-	Map handleEvent(BasicRequest requestType) throws Exception {
+	List handleEvent(BookmarksRequest requestType, SyllabusContext context) throws Exception {
+
+		if (requestType.sessionToken != userStore.getSessionToken()){
+			log.error("Session token wrong!!! Current token is ${userStore.getSessionToken()}")
+			throw new CapturedException("Unauthorised request: token error")
+		}
+
 		def data
 		String currentUser = userStore.userId
 		log.debug("Getting for: User $currentUser, session ${userStore.sessionId}")
@@ -39,7 +47,17 @@ class BookmarksRequestHandler {
 		} else {
 			data = bookmarksStore.getSessionBookmarks(userStore.sessionId, false)
 		}
-		return [bookmarks: data];
+
+		if (requestType.action == 'download'){
+			HttpSyllabusContext httpSyllabusContext = (HttpSyllabusContext)context
+			String fileName = "$currentUser ${new Date().format("yyyy-MM-dd HH:mm")}.txt"
+			httpSyllabusContext.response.setHeader("Content-Disposition", "attachment; filename=\"$fileName\";");
+		}
+		return data;
+	}
+
+	public static class BookmarksRequest extends BasicRequest{
+		String action
 	}
 
 }

@@ -3,6 +3,7 @@ package nz.ac.auckland.banana.stencils
 import nz.ac.auckland.banana.services.BookmarksStore
 import nz.ac.auckland.banana.services.UserStore
 import nz.ac.auckland.stencil.Path
+import nz.ac.auckland.util.JacksonHelper
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -62,8 +63,7 @@ class RestUploadBookmark extends TextFileUploadStencil {
 	}
 
 	protected List parseBookmarkJson(String wholeBody){
-		// TODO parse JSON
-		return []
+		return JacksonHelper.deserialize(wholeBody, List)
 	}
 
 	protected List parseBookmarksXml(Element bookmarkNode){
