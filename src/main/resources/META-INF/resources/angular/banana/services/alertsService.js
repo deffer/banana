@@ -1,5 +1,9 @@
 iBookmarks.app.factory('alertsService', function ($timeout) {
 	var service = {
+		CODE_NO_BOOKMARKS:  0,
+		CODE_NOT_LOGGED_IN: 1,
+		CODE_SERVER_UNAVAILABLE: 2,
+
 		listeners: [],
 		alerts: [],
 
@@ -9,25 +13,25 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 		 --------------------------------------------------------------
 		 */
 		addListener: function(listener){
-			service.listeners.push(listener);
+			return service.listeners.push(listener);
 		},
 		addWarning: function(message, details){
-			service._addClosable(message, details, 'warning');
+			return service._addClosable(message, details, 'warning');
 		},
 		addSuccess: function(message, details){
-			service._addClosable(message, details, 'success');
+			return service._addClosable(message, details, 'success');
 		},
 		addInfo: function(message, details){
-			service._addClosable(message, details, 'info');
+			return service._addClosable(message, details, 'info');
 		},
 		addError: function(message, details){
-			service._addClosable(message, details, 'error');
+			return service._addClosable(message, details, 'error');
 		},
 		addFatal: function(message, details){
 			var alert = {message: message, type: 'error'};
 			if (details)
 				alert.details = details;
-			service.addAlert(alert);
+			return service.addAlert(alert);
 		},
 
 		/**
@@ -36,7 +40,7 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 		 */
 		addNotice: function(message){
 			var alert = {message: message, type: 'success'};
-			service.addAlert(alert, true);
+			return service.addAlert(alert, true);
 		},
 
 		_addClosable: function(message, details, type){
@@ -44,7 +48,7 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 			if (details){
 				result.details = details;
 			}
-			service.addAlert(result);
+			return service.addAlert(result);
 		},
 
 		/*
@@ -64,10 +68,19 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 				   service.dismiss(idx);
 			   }, 4000);
 			}
+			return alert;
 		},
 
 		dismiss: function(idx) {
 			service.alerts.splice(idx, 1);
+		},
+
+		dismissAllWithCode: function(code){
+			var alerts2delete = _.where(service.alerts, {code: code});
+			_.each(alerts2delete, function(alert){
+				var idx = service.alerts.indexOf(alert);
+				service.dismiss(idx);
+			});
 		},
 
 		clearAll: function() {

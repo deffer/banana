@@ -57,6 +57,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 		backend.saveBookmark($scope.inputTitle, $scope.inputUrl, $scope.inputLabels, $scope.currentInputId).then(
 			function(data){
 				console.log(data);
+				alertsService.dismissAllWithCode(alertsService.CODE_NO_BOOKMARKS);
 				var match = bookmarksShuffle.updateAfterBookmarkChanged(data, modifying);
 				if (!match){
 					alertsService.addInfo("Your bookmark has been saved",
@@ -80,8 +81,10 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 						"You can browse example bookmarks or start adding new.",
 						"To import from your own google bookmarks XML file, go to 'Edit' -> 'Import from file'",
 						"You can also use this import with the JSON file you previously exported"
-					]);
+					]).code=alertsService.CODE_NO_BOOKMARKS;
 				return;
+			} else{
+				alertsService.dismissAllWithCode(alertsService.CODE_NO_BOOKMARKS);
 			}
 			console.log("Updating folders");
 

@@ -36,12 +36,14 @@ class RestApiBookmarkStencil implements Stencil{
 				data = bookmarksStore.getSessionBookmarks(userStore.sessionId, false)
 			}
 
+			String result = JacksonHelper.serialize(data)
 			if (action == 'download'){
 				String fileName = "$currentUser ${DF.format(new Date())}.txt"
 				response.setHeader("Content-Disposition", "attachment; filename=\"$fileName\";");
+				log.info("Returning ${result.length()} of data as a file")
 			}
 
-			response.writer.write(JacksonHelper.serialize(data));
+			response.writer.write(result);
 
 		}else{
 			response.writer.write('"a":"b"')
