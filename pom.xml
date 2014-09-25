@@ -24,6 +24,10 @@
 			<artifactId>composite-s3-webjar</artifactId>
 			<version>[5.2,)</version>
 			<exclusions>
+				<exclusion>
+					<groupId>nz.ac.auckland.lmz.javascript</groupId>
+					<artifactId>javascript-angular</artifactId>
+				</exclusion>
 				<!--exclusion>
 					<groupId>nz.ac.auckland.common</groupId>
 					<artifactId>template-scraper</artifactId>
@@ -31,10 +35,6 @@
 				<exclusion>
 					<groupId>nz.ac.auckland.stencil</groupId>
 					<artifactId>stencil-util</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>nz.ac.auckland.grayles</groupId>
-					<artifactId>grayles-services</artifactId>
 				</exclusion-->
 			</exclusions>
 		</dependency>
