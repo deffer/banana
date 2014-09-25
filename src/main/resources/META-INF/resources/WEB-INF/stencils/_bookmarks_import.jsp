@@ -1,22 +1,9 @@
 <div name="uploadBlock span4" collapse="uploadFileCollapsed">
     <div class="alert alert-info">
         Please select
-	    <a href="#" class="nicetooltip">
-		    XML
-		    <span>
-		        <img class="callout" src="img/callout.gif" />
-		        <strong>Google bookmark format</strong><br />
-			    This application supports import from google bookmarks.
-		    </span>
-	    </a>
+	    <a href="#" style="cursor: help;" title="This application supports import from google bookmarks.">XML</a>
 	    or
-	    <a href="#" class="nicetooltip">
-		    JSON
-		    <span>
-		        <img class="callout" src="img/callout.gif" />
-		        If you previously exported your bookmarks with this application, you can import them back again.
-		    </span>
-	    </a>
+	    <a href="#" style="cursor: help;" title="If you previously exported your bookmarks with this application, you can import them back again.">JSON</a>
 	    file with your bookmarks. You can download your google bookmarks from here <a href="https://www.google.com/bookmarks/?output=xml" target="_blank">www.google.com/bookmarks/?output=xml</a>
     </div>
     <div class="control-group">
