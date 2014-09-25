@@ -52,7 +52,16 @@
 
 	<div ng-controller="iBookmarks.app.LoginCtrl" class="well well-large">
 		<div ng-show="!signedIn" style="margin-bottom: 10px;">
-			<span title="All data you see is an example and all changes you do will be lost."> You are not logged in. Hover for more info.</span>
+			<span> You are not logged in.
+				<a href="" class="nicetooltip">More info
+			    <span>
+			        <img class="callout" src="img/callout.gif" />
+			        <strong>To start saving your bookmarks you need to sign in.</strong><br />
+				    No information about your google account will be stored except your id.<br>
+				    If you don't want to sign it right now, you can try example bookmarks below. All information you enter will be lost after you leave this application.
+			    </span>
+				</a>
+			</span>
 		</div>
 		<div id="gConnect" ng-show="!signedIn">
 			<button class="g-signin"
@@ -66,7 +75,18 @@
 		</div>
 
 		<div ng-show="signedIn">
-			You are logged in as {{authnInfo.name}}
+			You are logged in as
+			<span title="Your google id is: {{authnInfo.userid}}" ng-show="authnInfo.name">{{authnInfo.name}}</span>
+			<span ng-show="!(authnInfo.name)">
+				<a href="#" class="nicetooltip">{{authnInfo.userid}}
+			    <span>
+			        <img class="callout" src="img/callout.gif" />
+			        <strong>Your name is not available</strong><br />
+				    Your google profile does not have a name attached to it.
+			    </span>
+				</a>
+			</span>
+
 			<button class="btn" ng-click="logOut()">Log out</button>
 		</div>
 	</div>
@@ -110,7 +130,10 @@
 					<a href="" ng-click="clearFilter()" style="font-size: small;">Clear filter</a>
 				</div>
 
+				<!-- bookmarks add panel -->
 				<%@include file="_bookmarks_add.jsp" %>
+
+				<!-- bookmarks import panel -->
 				<%@include file="_bookmarks_import.jsp" %>
 
 				<div>

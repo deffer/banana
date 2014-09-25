@@ -190,7 +190,7 @@ class BookmarksStore {
 		if (id){
 			// delete labels since we are going to replace them with new set
 			tx.del("bm:$id:labels")
-			log.debug("${b.id? 'Updating existing entry' : 'Merging with existing entry'} $id values ${b.title.take(20)}.. -> ${b.url.take(20)}.. ${b.timestamp?.toString()} in ${b.labels}")
+			log.debug("${b.id? 'Updating/adding entry' : 'Merging with existing entry'} $id values ${b.title.take(20)}.. -> ${b.url.take(20)}.. ${b.timestamp?.toString()} in ${b.labels}")
 		}else{
 			id = UUID.randomUUID().toString().replaceAll('-', '')
 			log.debug("Adding new entry: $id values ${b.title.take(20)}... -> ${b.url.take(20)}... ${b.timestamp?.toString()} in ${b.labels}")
@@ -198,8 +198,8 @@ class BookmarksStore {
 
 		tx.sadd("user:$userId:bmids", id)
 		tx.sadd("user:$userId:$bookmarkHashCode:bmids", id)
-		tx.set("bm:$id:title", b.title)
-		tx.set("bm:$id:url", b.url)
+		tx.set("bm:$id:title", b.title.toString())
+		tx.set("bm:$id:url", b.url.toString())
 		tx.set("bm:$id:timestamp", b.timestamp?.toString())
 		b.labels?.each{String label ->
 			tx.sadd("bm:$id:labels",label)
