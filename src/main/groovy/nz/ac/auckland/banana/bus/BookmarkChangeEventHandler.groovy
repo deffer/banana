@@ -15,13 +15,18 @@ import javax.inject.Inject
 class BookmarkChangeEventHandler{
 	private static final Logger log = LoggerFactory.getLogger(BookmarkChangeEventHandler)
 
-	boolean offline = true
+	boolean offline = false
 
 	@Inject UserStore userStore
 	@Inject BookmarksStore bookmarksStore
 
 	BookmarkChangeResponse handleEvent(BookmarkChangeRequest requestType) throws Exception {
-		// TODO check csrf token
+
+		if (requestType.sessionToken != userStore.getSessionToken()){
+			log.error("Session token wrong!!! Current token is ${userStore.getSessionToken()}")
+			throw new CapturedException("Unauthorised request: token error")
+		}
+
 		String action = requestType.action?.toLowerCase()
 
 		String responseId = requestType.id

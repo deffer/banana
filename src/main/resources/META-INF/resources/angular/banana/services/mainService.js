@@ -9,5 +9,7 @@ iBookmarks.app.factory('mainService', function(backend, bookmarksShuffle){
 			bookmarksShuffle.convertFromServer(data, service.bookmarkStore);
 		}
 	};
+
+	backend.sessionToken = service.sessionToken;
 	return service;
 });

@@ -73,7 +73,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 
 	$scope.getBookmarksFromServer = function () {
-		backend.getBookmarks(mainService.sessionToken).then(function (results) {
+		backend.getBookmarks().then(function (results) {
 			if (_.isUndefined(results) || _.isEmpty(results) || _.isNull(results) || results == 'null') {
 				console.log("Empty response. IGNORE.");
 				alertsService.addInfo("You don't have any saved bookmarks.",
@@ -180,8 +180,12 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	};
 
 	$scope.export2JSON = function(){
-		// todo pass csrf token
-		location.href=backend.DOWNLOAD_BOOKMARKS_URL; // NOT $window.open(backend.DOWNLOAD_BOOKMARKS_URL);
+		//location.href=backend.DOWNLOAD_BOOKMARKS_URL; // NOT $window.open(backend.DOWNLOAD_BOOKMARKS_URL);
+		backend.downloadBookmarks().then(function(temporaryCode){
+			location.href=backend.DOWNLOAD_BOOKMARKS_URL+"/"+temporaryCode;
+		}, function(rejection){
+			alertsService.addError("Download failed. Please try again");
+		});
 	};
 
 	$rootScope.$on('successSignIn', function(e, data){

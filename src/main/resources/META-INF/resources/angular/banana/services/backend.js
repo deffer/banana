@@ -2,7 +2,7 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 
 	var backend = {
 		DOWNLOAD_BOOKMARKS_URL : 'rest/bookmarks/download',
-		GET_BOOKMARKS_URL : 'rest/bookmarks/get',
+		sessionToken: null,   // is set by mainService
 
 		callUtils: function (action, input, input2) {
 			var defer = $q.defer();
@@ -17,11 +17,11 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 			return promise;
 		},
 
-		getBookmarks: function (sessionToken) {
+		getBookmarks: function () {
 			var defer = $q.defer();
 			var promise = defer.promise;
 			$http({method: 'POST', url: UOA.endpoints.bookmarks.get,
-				data: {sessionToken: sessionToken}}).
+				data: {sessionToken: backend.sessionToken}}).
 				success(function(data, status, headers, config) {
 					defer.resolve(data);
 				}).
@@ -31,11 +31,27 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 			return promise;
 		},
 
+		downloadBookmarks: function () {
+			var defer = $q.defer();
+			var promise = defer.promise;
+			$http({method: 'POST', url: UOA.endpoints.bookmarks.get,
+				data: {action: 'download', sessionToken: backend.sessionToken}}).
+				success(function(data, status, headers, config) {
+					console.log(data);
+					defer.resolve(data.temporaryCode);
+				}).
+				error(function(data, status, headers, config) {
+					console.log(data);
+					defer.reject({});
+				});
+			return promise;
+		},
+
 		saveBookmark: function (title, url, labels, id) {
 			var defer = $q.defer();
 			var promise = defer.promise;
 			$http({method: 'POST', url: UOA.endpoints.bookmarks.change,
-				data: {id: id, title: title, url: url, labels: labels}}).
+				data: {id: id, title: title, url: url, labels: labels, sessionToken: backend.sessionToken}}).
 				success(function(data, status, headers, config) {
 					defer.resolve(data);
 				}).
@@ -48,7 +64,8 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 		deleteBookmark: function (id) {
 			var defer = $q.defer();
 			var promise = defer.promise;
-			$http({method: 'POST', url: UOA.endpoints.bookmarks.change, data: {action: 'delete', id: id}}).
+			$http({method: 'POST', url: UOA.endpoints.bookmarks.change,
+				data: {action: 'delete', id: id, sessionToken: backend.sessionToken}}).
 				success(function(data, status, headers, config) {
 					defer.resolve(data);
 				}).
@@ -58,11 +75,11 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 			return promise;
 		},
 
-		authenticate: function (userid, code, sessionToken) {
+		authenticate: function (userid, code) {
 			var defer = $q.defer();
 			var promise = defer.promise;
 			$http({method: 'POST', url: UOA.endpoints.bookmarks.gplusauth,
-				data: {"userid": userid, "code":code, sessionToken: sessionToken}}).
+				data: {"userid": userid, "code":code, sessionToken: backend.sessionToken}}).
 				success(function(data, status, headers, config) {
 					defer.resolve(data);
 				}).

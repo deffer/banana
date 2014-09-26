@@ -28,14 +28,6 @@
 					<groupId>nz.ac.auckland.lmz.javascript</groupId>
 					<artifactId>javascript-angular</artifactId>
 				</exclusion>
-				<!--exclusion>
-					<groupId>nz.ac.auckland.common</groupId>
-					<artifactId>template-scraper</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>nz.ac.auckland.stencil</groupId>
-					<artifactId>stencil-util</artifactId>
-				</exclusion-->
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -57,11 +49,11 @@
 		</dependency>
 
 
-		<dependency>
+		<!--dependency>
 			<groupId>nz.ac.auckland.stencil</groupId>
 			<artifactId>stencil-core</artifactId>
 			<version>[2,3)</version>
-		</dependency>
+		</dependency-->
 		
 
 		<dependency>

@@ -1,5 +1,7 @@
 package nz.ac.auckland.banana.services
 
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
 import nz.ac.auckland.common.stereotypes.UniversityComponent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -8,6 +10,7 @@ import org.springframework.web.context.request.ServletRequestAttributes
 
 import javax.servlet.http.HttpServletRequest
 import java.security.SecureRandom
+import java.util.concurrent.TimeUnit
 
 @UniversityComponent
 class UserStore {
@@ -17,6 +20,20 @@ class UserStore {
 	static final String USER_GPLUS_ID = 'USER_GPLUS_ID'
 	static final String USER_SESSION_ID = 'USER_SESSION_ID'
 	static final String SESSION_TOKEN = 'SESSION_TOKEN'
+
+	Cache<String, String> tempAccessKeys = CacheBuilder.newBuilder()
+			.concurrencyLevel(4)
+			.weakKeys()
+			.maximumSize(10000)
+			.expireAfterWrite(15, TimeUnit.SECONDS)
+			.build()
+
+
+	public String requestTemporaryAccessKey(String userId){
+		String result = UUID.randomUUID().toString().replaceAll('-', '');
+		tempAccessKeys.put(result, userId)
+		return result
+	}
 
 	public HttpServletRequest getCurrentRequest() {
 		ServletRequestAttributes servletRequestAttributes =
