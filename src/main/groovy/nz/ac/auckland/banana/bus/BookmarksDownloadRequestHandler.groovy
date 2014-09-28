@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
+ * Generates temporary access key
+ *
  * author: Irina Benediktovich - http://plus.google.com/+IrinaBenediktovich
  */
 @UniversityComponent

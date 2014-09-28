@@ -32,8 +32,7 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 	 * Centered position for element
 	 */
 	$scope.topPosition = function(height) {
-		var top = $(window).scrollTop() + ($(window).height() / 2 - (height / 2));
-		return top;
+		return $(window).scrollTop() + ($(window).height() / 2 - (height / 2));
 	};
 
 	$scope.topPos = function() {
@@ -68,11 +67,11 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 	};
 
 	$scope.$watch('inputUrl', function () {
-		if ($scope.editMode){
+		/*if ($scope.editMode && $scope.currentInputId){
 			return;
-		}
+		} */
 		console.log("Reacting on change "+$scope.inputUrl);
-		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.bookmarkStore, $scope.inputUrl);
+		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl);
 	});
 
 	$scope.populateSuggested = function(){
@@ -94,7 +93,6 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 
 
 	$rootScope.$on('editBookmark', function(e, bookmark){
-		console.log("Asked to save");
 		console.log(bookmark);
 		$scope.openAddBookmark();
 	});

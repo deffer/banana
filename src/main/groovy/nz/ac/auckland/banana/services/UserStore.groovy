@@ -21,11 +21,10 @@ class UserStore {
 	static final String USER_SESSION_ID = 'USER_SESSION_ID'
 	static final String SESSION_TOKEN = 'SESSION_TOKEN'
 
-	Cache<String, String> tempAccessKeys = CacheBuilder.newBuilder()
-			.concurrencyLevel(4)
-			.weakKeys()
-			.maximumSize(10000)
-			.expireAfterWrite(15, TimeUnit.SECONDS)
+	// holds a temporary access keys used for downloading files. key should expire after 15 seconds or after being used.
+	// set would suffice, but I cant find a suitable implementation, therefore going with Cache
+	Cache<String, String> tempAccessKeys = CacheBuilder.newBuilder().concurrencyLevel(4)
+			.weakKeys().maximumSize(10000).expireAfterWrite(15, TimeUnit.SECONDS)
 			.build()
 
 
@@ -33,6 +32,12 @@ class UserStore {
 		String result = UUID.randomUUID().toString().replaceAll('-', '');
 		tempAccessKeys.put(result, userId)
 		return result
+	}
+
+	public validateTemporaryAccessKey(String accessKey, String userId){
+		Object obj = tempAccessKeys.getIfPresent(accessKey);
+		tempAccessKeys.invalidate(accessKey);
+		return userId.equals(obj);
 	}
 
 	public HttpServletRequest getCurrentRequest() {

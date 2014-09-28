@@ -1,8 +1,9 @@
 <div name="quickAddBlock" collapse="addBookmarkCollapsed">
     <div class="alert alert-warning" ng-show="inputUrl == suggestedBookmark.url">
         This url is already bookmarked as '{{suggestedBookmark.shortTitle}}' in '{{suggestedBookmark.listFolders}}'.
-        Do you want to modify existing bookmark?
-        <button class="btn btn-warning" ng-click="populateSuggested()">Modify...</button>
+	    <span ng-show="!currentInputId"> Do you want to modify existing bookmark?
+            <button class="btn btn-warning" ng-click="populateSuggested()">Modify...</button>
+		</span>
     </div>
 
     <div class="controls control-row">
@@ -22,7 +23,7 @@
             <option ng-repeat="item in bookmarkStore.foldersList" value="{{item.id}}">{{item.id}}</option>
         </select-->
 
-        <input class="span3" ui-select2="select2Options" type="text"
+        <input class="span3" ui-select2="select2Options" type="hidden"
                id="inputFolders" placeholder="Folders" ng-model="inputLabels">
     </div>
 

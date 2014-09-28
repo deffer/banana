@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.text.SimpleDateFormat
 
-@Path("/rest/bookmarks/{action}")
+@Path("/download/{code}")
 class RestApiBookmarkStencil implements Stencil{
 	private static final Logger log = LoggerFactory.getLogger(RestApiBookmarkStencil)
 	@Inject UserStore userStore
@@ -22,32 +22,23 @@ class RestApiBookmarkStencil implements Stencil{
 	SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm")
 
 	void render(HttpServletRequest request, HttpServletResponse response, Map<String, String> pathParameters) {
-		String action = pathParameters['action'].toLowerCase()
-		response.setHeader("Content-Type", "application/json");
+		String currentUser = userStore.userId
 
-		if (action in ['get', 'download']){
-			def data
-			String currentUser = userStore.userId
-			log.debug("Getting for: User $currentUser, session ${userStore.sessionId}")
-
-			if (currentUser){
-				data = bookmarksStore.getUserBookmarks(currentUser, false)
-			}else{
-				data = bookmarksStore.getSessionBookmarks(userStore.sessionId, false)
-			}
-
-			String result = JacksonHelper.serialize(data)
-			if (action == 'download'){
-				String fileName = "$currentUser ${DF.format(new Date())}.txt"
-				response.setHeader("Content-Disposition", "attachment; filename=\"$fileName\";");
-				log.info("Returning ${result.length()} of data as a file")
-			}
-
-			response.writer.write(result);
-
-		}else{
-			response.writer.write('"a":"b"')
+		if (!userStore.validateTemporaryAccessKey(pathParameters['code'], currentUser?:userStore.sessionId)){
+			throw new Exception("Unauthorised");
 		}
+
+		log.debug("Loading bookmarks of $currentUser, session ${userStore.sessionId}")
+
+		def data = currentUser ? bookmarksStore.getUserBookmarks(currentUser, false): bookmarksStore.getSessionBookmarks(userStore.sessionId, false)
+
+		String result = JacksonHelper.serialize(data)
+		String fileName = "$currentUser ${DF.format(new Date())}.txt"
+		response.setHeader("Content-Type", "application/json"); // not sure if necessary
+		response.setHeader("Content-Disposition", "attachment; filename=\"$fileName\";");
+		log.info("Returning ${result.length()} characters as a file")
+
+		response.writer.write(result);
 
 	}
 }

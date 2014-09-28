@@ -16,7 +16,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	$scope.filterInput = "";
 
 	// for Add Bookmark
-	$scope.currentInputId = null;
+	$scope.currentInputId = null;  // indicates a bookmark being modified, if null - new bookmark
 	$scope.inputUrl = "";
 	$scope.inputTitle = "";
 	$scope.inputLabels = null;
@@ -48,10 +48,12 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	$scope.addGoogleBookmark = function () {
 		var modifying = null;
 		if (!_.isUndefined($scope.currentInputId)){
-			if ($scope.suggestedBookmark && ($scope.suggestedBookmark.id == $scope.currentInputId))
-				modifying = $scope.suggestedBookmark;
-			else
-				modifying = bookmarksShuffle.getBookmark($scope.currentInputId);
+			modifying = bookmarksShuffle.getBookmark($scope.currentInputId);
+			console.log("Saving a change to the entry");
+			console.log(modifying);
+			console.log($scope.currentInputId+" - '"+$scope.inputTitle+"'  ["+$scope.inputLabels+"] "+ $scope.inputUrl);
+		}else{
+			console.log("Adding entry "+$scope.currentInputId+" - '"+$scope.inputTitle+"'  ["+$scope.inputLabels+"] "+ $scope.inputUrl);
 		}
 
 		backend.saveBookmark($scope.inputTitle, $scope.inputUrl, $scope.inputLabels, $scope.currentInputId).then(
@@ -65,10 +67,11 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 				}else{
 					alertsService.addNotice("Your bookmark has been saved");
 				}
+				$scope.closeQuickAdd();
 			}, function(error){
 				alertsService.addError('Server error', ['Unable to save bookmark. Please try again later']);
+				$scope.closeQuickAdd();
 			});
-		$scope.closeQuickAdd();
 	};
 
 
@@ -108,18 +111,15 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	});
 
 	$scope.$watch('inputUrl', function () {
-		if ($scope.editMode){
-			return;
-		}
 		console.log("Reacting on change "+$scope.inputUrl);
-		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl);
+		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl); // TODO [add currently modifying bookmark to skip thi match
 	});
 
 	$scope.populateSuggested = function(){
 		$scope.currentInputId = $scope.suggestedBookmark.id;
 		$scope.inputTitle = $scope.suggestedBookmark.title;
 		$scope.inputLabels = $scope.suggestedBookmark.listFolders;
-		// $scope.suggestedBookmark = null; // keep suggestion for when we want to detect Edit vs. Add
+		$scope.suggestedBookmark = null;
 	};
 
 	$scope.closeQuickAdd = function(){

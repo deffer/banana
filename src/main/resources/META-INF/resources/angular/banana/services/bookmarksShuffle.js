@@ -109,7 +109,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			return _.find(bookmarkStore.displayFolders, function(it){return it.id == id});
 		},
 		getBookmark: function(id){
-			return _.find(bookmarkStore.all, function (b) { return b.id = id;});
+			return _.find(bookmarkStore.all, function (b) { return b.id == id;});
 		},
 
 		clearFilter : function(){
@@ -119,12 +119,11 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			bookmarkStore.filter = undefined;
 		},
 
-		checkBookmarkExists : function(inputUrl){
+		checkBookmarkExists : function(inputUrl, exceptThisBookmarkId){
 			var urlsMap = bookmarkStore.urlsMap;
-			if (inputUrl && urlsMap[inputUrl]){
-				var b = urlsMap[inputUrl][0]; // get first bookmarks that match entered url
+			if (inputUrl && urlsMap[inputUrl]){ // get first bookmarks that match entered url
+				var b = _.find(urlsMap[inputUrl], function (item){return (!exceptThisBookmarkId) || exceptThisBookmarkId == item.id});
 				console.log("Bookmarks with this url exists...");
-				console.log(b);
 				var result = {id: b.id, title: b.title, url:inputUrl,listFolders: b.labels,
 					shortTitle: b.title.substring(0, _.min(b.title.length, 15))
 				};
@@ -157,6 +156,8 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			var b = existing ? existing : data;
 			var id = b.id;
 
+			var urlChanged = (existing && existing.url != data.url);
+
 			var matchesFilter = true;
 			if (bookmarkStore.filterOn){
 				matchesFilter = service.matchesFilter(b, bookmarkStore.filter);
@@ -170,13 +171,14 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			});
 
 			// update url maps if necessary
-			if (existing && existing.url != data.url){
+			if (urlChanged){
 				service.removeFromListById(bookmarkStore.urlsMap[existing.url], id);
 			}
 			if (_.isUndefined(bookmarkStore.urlsMap[data.url])){
 				bookmarkStore.urlsMap[data.url] = [b];
 			}else{
-				bookmarkStore.urlsMap[data.url].push(b);
+				if (!existing || urlChanged)
+					bookmarkStore.urlsMap[data.url].push(b);
 			}
 
 			// update folders
@@ -184,23 +186,27 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				// remove from folders
 				_.each(existing.labels, function(label){
 					if (!_.contains(data.labels, label)){
+						console.log(bookmarkStore.folders[label]);
 						service.removeFromListById(bookmarkStore.folders[label], id);
 						service._updateFoldersCount(label); // decrease foldersList count
 					}
 				});
 			}
-
 			_.each(data.labels, function(label){
 				if (!existing || (existing && !_.contains(existing.labels, label))){
 					if (matchesFilter){
+						console.log("Adding folder "+label);
 						bookmarkStore.folders[label].push(b);
 						service._updateFoldersCount(label); // increase foldersList count
+					}else{
+						console.log("Skip adding folder because entry doesn't match filter");
 					}
 				}
 			});
 
 			// TODO if data.labels empty and (folders changed or its new entry), need to add to unlabelled
 			// TODO if existing.labels empty and folders changed, remove from unlabelled.
+			// TODO update ALL if necessary
 
 			// update bookmark itself
 			if (existing){
@@ -234,21 +240,36 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 
 		_updateFoldersCount: function(label) {
+			var cnt = bookmarkStore.folders[label].length;
 			var folderInfo = service.getFolderById(label);
-			if (folderInfo){
-				folderInfo.count = bookmarkStore.folders[label].length;
-				if (folderInfo.count == 0 && label == service.folderUnlabelled.id){
-					service.removeFromListById(bookmarkStore.displayFolders, label);
+			if (!folderInfo){
+				if (cnt == 0){
+					return;
+				}else{
+					var newFolder = {id: label, originalName: label, name: label+" (1)", count: 1};
+					bookmarkStore.foldersList.push(newFolder );
+					bookmarkStore.displayFolders.push(newFolder);
+					return;
 				}
+			}
+
+			folderInfo.count = cnt;
+			folderInfo.name = folderInfo.originalName+" ("+cnt+")";
+			if (cnt == 0){
+				console.log("Last item was removed from folder "+label+" - removing the reference");
+				service.removeFromListById(bookmarkStore.foldersList, label);
+				service.removeFromListById(bookmarkStore.displayFolders, label);
 			}
 		},
 
 		removeFromListById: function(list, id){
-			for (var i = 0; i < list.length && list[i].id != id; i++) {	} // find index
-			var idx = i+1;
-			if (idx >= list.length)
-				console.log("Id not found");
-			list.splice(idx, 1);
+			var item = _.where(list, {id: id});
+			if (item){
+				var idx = list.indexOf(item);  //  \
+				list.splice(idx, 1);           // _ there must be a better way
+			}else{
+				console.log("Id "+id+" not found");
+			}
 		},
 
 		useExampleStore : function(){

@@ -56,10 +56,10 @@ class BookmarkChangeEventHandler{
 		String id
 		String title
 		String url
-		String labels
+		List<String> labels
 	}
 
-	static class BookmarkChangeResponse extends BasicRequest{
+	static class BookmarkChangeResponse{
 		String id
 		String title
 		String url
