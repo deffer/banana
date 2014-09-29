@@ -7,6 +7,10 @@ iBookmarks.app.factory('mainService', function(backend, bookmarksShuffle){
 
 		convertFromServer : function(data){
 			bookmarksShuffle.convertFromServer(data, service.bookmarkStore);
+		},
+
+		isUndefined : function(obj){
+			return _.isUndefined(obj) || _.isNull(obj);
 		}
 	};
 
