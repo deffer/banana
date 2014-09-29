@@ -41,7 +41,6 @@ abstract class TextFileUploadStencil implements Stencil{
 	 */
 	@SuppressWarnings("static-method")
 	public void handleError(String message, HttpServletResponse response){
-		response.setHeader("Content-Type", "application/json");
 		response.setContentType("application/json");
 		response.writer.write(JacksonHelper.serialize([error: message]));
 	};
@@ -54,8 +53,6 @@ abstract class TextFileUploadStencil implements Stencil{
 			handleError("Not a multipart", response);
 			return
 		}
-
-		response.setContentType("text/html");
 
 		// Create a factory for disk-based file items. Technically this code will never need to create a file,
 		//    but factory is required by API.
