@@ -50,15 +50,17 @@
 
 <div class="container">
 
-	<div ng-controller="iBookmarks.app.LoginCtrl" class="well well-large">
+<div class="well well-large"> <div class="controls controls-row">
+
+	<div ng-controller="iBookmarks.app.LoginCtrl" class="span4">
 		<div ng-show="!signedIn" style="margin-bottom: 10px;">
 			<span> You are not logged in.
 				<a href="" class="nicetooltip">More info
 			    <span>
 			        <img class="callout" src="img/callout.gif" />
-			        <strong>To start saving your bookmarks you need to sign in.</strong><br />
+			        <strong>Sign in to start saving your bookmarks.</strong><br />
 				    No information about your google account will be stored except your id.<br>
-				    If you don't want to sign it right now, you can try example bookmarks below. All information you enter will be lost after you leave this application.
+				    If you don't want to sign in right now, you can try example bookmarks below. All information you enter will be lost after you leave this application.
 			    </span>
 				</a>
 			</span>
@@ -90,101 +92,106 @@
 			<button class="btn" ng-click="logOut()">Log out</button>
 		</div>
 	</div>
-
-	<div ng-controller="iBookmarks.app.AlertsCtrl">
-		<bm-alert ng-repeat="alert in alerts track by $index" alert-object="alert" on-alert-close="closeAlertCallback($index)"></bm-alert>
+	<div ng-controller="iBookmarks.app.AlertsPopupCtrl" class="span6">
+		<bm-alert ng-repeat="alert in alertsPopup track by $index" alert-object="alert"></bm-alert>
 	</div>
+</div></div>
+
+<div ng-controller="iBookmarks.app.AlertsCtrl">
+	<bm-alert ng-repeat="alert in alerts track by $index" alert-object="alert" on-alert-close="closeAlertCallback($index)"></bm-alert>
+</div>
 
 
-	<div ng-controller="iBookmarks.app.BookmarksCtrl" name="leftColumn">
+<div ng-controller="iBookmarks.app.BookmarksCtrl" name="leftColumn">
 
-		<div class="well span4">
+	<div class="well span4">
 
-			<div name="manageBlock">
-				<div class="controls controls-row">
-					<!--input class="span3" type="text" style="display:block;" ng-model="filterInput" ng-change="onFilterChange()" placeholder="search..."-->
-					<div class="input-append">
-						<input class="span2" id="appendedInputButton" type="text" ng-model="filterInput"
-						       ng-on-enter="filterKeypress()" placeholder="filter...">
-						<button class="btn" type="button" ng-click="filterAction()" ng-disabled="!validFilter()">Go!
-						</button>
-					</div>
-
-					<div class="btn-group pull-right" style="margin-bottom: 10px;">
-						<button class="btn span1 dropdown-toggle" data-toggle="dropdown">
-							Edit
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
-							<li><a href="" ng-click="openImport()">Import from file..</a></li>
-							<li><a href="" ng-click="export2JSON()" class="pull-left">Export...</a>
-								<i class="icon-download-alt pull-left" style="margin-top: 7px;"></i></li>
-							<li><a href="" class="pull-left">Edit mode </a>
-								<input type="checkbox" ng-model="editMode" class="pull-left" style="margin-top: 7px;"/>
-							</li>
-						</ul>
-					</div>
-
-				</div>
-				<div ng-show="bookmarkStore.filterOn">
-					<a href="" ng-click="clearFilter()" style="font-size: small;">Clear filter</a>
+		<div name="manageBlock">
+			<div class="controls controls-row">
+				<!--input class="span3" type="text" style="display:block;" ng-model="filterInput" ng-change="onFilterChange()" placeholder="search..."-->
+				<div class="input-append">
+					<input class="span2" id="appendedInputButton" type="text" ng-model="filterInput"
+					       ng-on-enter="filterKeypress()" placeholder="filter...">
+					<button class="btn" type="button" ng-click="filterAction()" ng-disabled="!validFilter()">Go!
+					</button>
 				</div>
 
-				<!-- bookmarks add panel -->
-				<%@include file="_bookmarks_add.jsp" %>
-
-				<!-- bookmarks import panel -->
-				<%@include file="_bookmarks_import.jsp" %>
-
-				<div>
-					<hr>
+				<div class="btn-group pull-right" style="margin-bottom: 10px;">
+					<button class="btn span1 dropdown-toggle" data-toggle="dropdown">
+						Edit
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
+						<li><a href="" ng-click="openImport()">Import from file..</a></li>
+						<li><a href="" ng-click="export2JSON()" class="pull-left">Export...</a>
+							<i class="icon-download-alt pull-left" style="margin-top: 7px;"></i></li>
+						<li><a href="" class="pull-left">Edit mode </a>
+							<input type="checkbox" ng-model="editMode" class="pull-left" style="margin-top: 7px;"/>
+						</li>
+					</ul>
 				</div>
 
 			</div>
-
-
-		<!--select class="span4" style="display:block;" ng-model="selectedFolder"
-			ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select-->
-
-			<div class="btn-group" style="margin-bottom: 10px;">
-				<button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: right;">
-					{{selectedFolder.name}}
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li ng-repeat="folder in bookmarkStore.displayFolders" class="cct">
-						<a class="cct" href="" ng-click="setSelectedFolder(folder)"
-						   ng-class="{boldit: (bookmarkStore.folders[folder.id].length>0 && bookmarkStore.filterOn)}">
-							{{folder.name}}
-						</a>
-					</li>
-				</ul>
+			<div ng-show="bookmarkStore.filterOn">
+				<a href="" ng-click="clearFilter()" style="font-size: small;">Clear filter</a>
 			</div>
 
-			<ul class="unstyled">
-				<li ng-repeat="b in selectedBookmarks">
-					<div>
-						<i class="icon-remove pull-right" title="Delete" style="cursor: pointer;"
-						   ng-show="editMode" ng-click="deleteBookmark(b)"></i>
-						<i class="icon-pencil pull-right" title="Edit" style="cursor: pointer;"
-						   ng-show="editMode" ng-click="editBookmark(b)"></i>
-						<a href="{{b.url}}" target="_blank"
-						   style="font-size:small; display:block; margin-left: 2px; margin-right: 50px;">-
-							{{b.title}}</a>
-					</div>
+			<!-- bookmarks add panel -->
+			<%@include file="_bookmarks_add.jsp" %>
+
+			<!-- bookmarks import panel -->
+			<%@include file="_bookmarks_import.jsp" %>
+
+			<div>
+				<hr>
+			</div>
+
+		</div>
+
+
+	<!--select class="span4" style="display:block;" ng-model="selectedFolder"
+		ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select-->
+
+		<div class="btn-group" style="margin-bottom: 10px;">
+			<button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: right;">
+				{{selectedFolder.name}}
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li ng-repeat="folder in bookmarkStore.displayFolders" class="cct">
+					<a class="cct" href="" ng-click="setSelectedFolder(folder)"
+					   ng-class="{boldit: (bookmarkStore.folders[folder.id].length>0 && bookmarkStore.filterOn)}">
+						{{folder.name}}
+					</a>
 				</li>
 			</ul>
 		</div>
-	</div>
 
-	<%@include file="_bm_add.jsp" %>
-
-	<div ng-controller="iBookmarks.app.UtilsCtrl" name="rightColumn">
-		<div class="well span6">
-			<%@include file="_utils.jsp" %>
-		</div>
+		<ul class="unstyled">
+			<li ng-repeat="b in selectedBookmarks">
+				<div>
+					<i class="icon-remove pull-right" title="Delete" style="cursor: pointer;"
+					   ng-show="editMode" ng-click="deleteBookmark(b)"></i>
+					<i class="icon-pencil pull-right" title="Edit" style="cursor: pointer;"
+					   ng-show="editMode" ng-click="editBookmark(b)"></i>
+					<a href="{{b.url}}" target="_blank"
+					   style="font-size:small; display:block; margin-left: 2px; margin-right: 50px;">-
+						{{b.title}}</a>
+				</div>
+			</li>
+		</ul>
 	</div>
+</div>
+
+<%@include file="_bm_add.jsp" %>
+
+<div ng-controller="iBookmarks.app.UtilsCtrl" name="rightColumn">
+	<div class="well span6">
+		<%@include file="_utils.jsp" %>
+	</div>
+</div>
+
 </div> <!-- container -->
 </body>
 </html>

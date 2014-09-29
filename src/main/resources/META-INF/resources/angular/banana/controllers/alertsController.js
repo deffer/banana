@@ -10,3 +10,8 @@ iBookmarks.app.AlertsCtrl = ['$scope', '$rootScope', '$window', 'alertsService',
 		alertsService.dismiss(index);
 	};
 }];
+
+
+iBookmarks.app.AlertsPopupCtrl = ['$scope', '$rootScope', '$window', 'alertsService', function($scope, $rootScope, $window, alertsService) {
+	$scope.alertsPopup = alertsService.alertsPopup;
+}];

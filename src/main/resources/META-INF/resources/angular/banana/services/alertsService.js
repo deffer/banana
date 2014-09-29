@@ -6,6 +6,7 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 
 		listeners: [],
 		alerts: [],
+		alertsPopup: [], // those that disappear after 4-5 seconds
 
 		/*
 		 --------------------------------------------------------------
@@ -57,22 +58,32 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 		 --------------------------------------------------------------
 		 */
 		addAlert: function(alert, autodismiss){
-			service.alerts.push(alert);
+			if (autodismiss)
+				service.alertsPopup.push(alert);
+			else
+				service.alerts.push(alert);
+
 			_.each(service.listeners, function(listener){
 				listener(alert);
 			});
+
 			if (autodismiss){
-			   $timeout(function(){
-				   // TODO fade-out instead of just dismiss
-					var idx = service.alerts.indexOf(alert);
-				   service.dismiss(idx);
-			   }, 4000);
+				$timeout(function(){
+					// TODO dont show more than 1 popup at a time. when new one comes in, immediately dismiss previous one
+					var idx = service.alertsPopup.indexOf(alert);
+					if (idx>=0)
+				        service.dismissPopup(idx);
+				}, 4000);
 			}
 			return alert;
 		},
 
 		dismiss: function(idx) {
 			service.alerts.splice(idx, 1);
+		},
+
+		dismissPopup: function(idx) {
+			service.alertsPopup.splice(idx, 1);
 		},
 
 		dismissAllWithCode: function(code){

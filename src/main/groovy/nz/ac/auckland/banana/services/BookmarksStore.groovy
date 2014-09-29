@@ -58,13 +58,16 @@ class BookmarksStore {
 		sessionBookmarks.put(sessionId.toString(), data)
 	}
 
-	public void saveSessionBookmark(def sessionId, Map data){
+	public String saveSessionBookmark(def sessionId, Map data){
 		def existing = sessionBookmarks.getIfPresent(sessionId.toString())
 		if (existing == null){
 			existing = []
 			sessionBookmarks.put(sessionId.toString(), existing)
 		}
+		if (!data.id)
+			data.id = UUID.randomUUID().toString().replaceAll('-', '')
 		existing.add(data)
+		return data.id;
 	}
 
 	public static Map prepareBookmark(Map data){
