@@ -24,25 +24,16 @@ import javax.inject.Inject
 @Event(name="gplusauth", namespace = "bookmarks")
 class AuthEventHandler{
 	Logger log = LoggerFactory.getLogger(this.class)
-	static String CLIENT_ID='405635638148-34r0rg7p4lt9ov2p8elbaos6jqlrqba6.apps.googleusercontent.com'
 
-	@Inject UserStore userStore
+	private static final HttpTransport TRANSPORT = new NetHttpTransport();
+	private static final JsonFactory JSON_FACTORY = new JacksonFactory()
+	static String CLIENT_ID='405635638148-34r0rg7p4lt9ov2p8elbaos6jqlrqba6.apps.googleusercontent.com'
 
 	@ConfigKey('banana.ga.secret')
 	String CLIENT_SECRET = 'blah'
 
-	/**
-	 * Default HTTP transport to use to make HTTP requests.
-	 */
-	private static final HttpTransport TRANSPORT = new NetHttpTransport();
-	/**
-	 * Default JSON factory to use to deserialize JSON.
-	 */
-	private static final JsonFactory JSON_FACTORY = new JacksonFactory()
-	/**
-	 * Gson object to serialize JSON responses to requests to this servlet.
-	 */
-	//private static final Gson GSON = new Gson();
+	@Inject UserStore userStore
+
 
 	AuthResponse handleEvent(AuthRequest requestType) throws Exception {
 		log.warn("\nAuthenticating User: ${requestType.userid}  \nCode: ${requestType.code} \nSession token: ${requestType.sessionToken}\nSecret: ${CLIENT_SECRET}")
@@ -63,7 +54,7 @@ class AuthEventHandler{
 		try {
 			// Upgrade the authorization code into an access and refresh token.
 			GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(TRANSPORT, JSON_FACTORY,
-						CLIENT_ID, CLIENT_SECRET, code, "postmessage").execute();  // doesnt work anymore :( probably need to add something to JSON_FACTORY
+						CLIENT_ID, CLIENT_SECRET, code, "postmessage").execute();
 
 			// You can read the Google user ID in the ID token.
 			// This sample does not use the user ID.
@@ -77,6 +68,7 @@ class AuthEventHandler{
 			return gplusId;
 		} catch (Exception e) {
 			e.printStackTrace()
+			log.error(e.getMessage(), e)
 			return null
 		}
 	}

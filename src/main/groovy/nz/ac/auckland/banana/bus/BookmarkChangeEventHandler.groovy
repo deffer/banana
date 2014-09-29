@@ -15,7 +15,7 @@ import javax.inject.Inject
 class BookmarkChangeEventHandler{
 	private static final Logger log = LoggerFactory.getLogger(BookmarkChangeEventHandler)
 
-	boolean offline = false
+	boolean offline = false   // for debugging (when only interested in client side behaviour)
 
 	@Inject UserStore userStore
 	@Inject BookmarksStore bookmarksStore

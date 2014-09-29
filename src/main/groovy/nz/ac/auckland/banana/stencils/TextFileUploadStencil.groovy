@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse
 /**
  * Stencil for uploading (accepting) small text files.
  * Returns content as string (descendants need to implement one abstract method accepting the content)
+ *
+ * author: Irina Benediktovich - http://plus.google.com/+IrinaBenediktovich
  */
 abstract class TextFileUploadStencil implements Stencil{
 	private Logger log = LoggerFactory.getLogger(getClass())

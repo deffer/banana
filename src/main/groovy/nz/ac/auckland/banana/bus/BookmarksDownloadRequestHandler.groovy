@@ -22,7 +22,6 @@ class BookmarksDownloadRequestHandler {
 	Logger log = LoggerFactory.getLogger(this.class)
 
 	@Inject UserStore userStore
-	@Inject BookmarksStore bookmarksStore
 
 	Map handleEvent(BasicRequest requestType, SyllabusContext context) throws Exception {
 

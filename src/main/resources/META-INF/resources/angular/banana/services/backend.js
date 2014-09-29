@@ -1,7 +1,6 @@
 iBookmarks.app.factory('backend', function ($q, $http) {
 
 	var backend = {
-		DOWNLOAD_BOOKMARKS_URL : 'rest/bookmarks/download',
 		sessionToken: null,   // is set by mainService
 
 		callUtils: function (action, input, input2) {
@@ -34,8 +33,8 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 		downloadBookmarks: function () {
 			var defer = $q.defer();
 			var promise = defer.promise;
-			$http({method: 'POST', url: UOA.endpoints.bookmarks.get,
-				data: {action: 'download', sessionToken: backend.sessionToken}}).
+			$http({method: 'POST', url: UOA.endpoints.bookmarks.download,
+				data: {sessionToken: backend.sessionToken}}).
 				success(function(data, status, headers, config) {
 					console.log(data);
 					defer.resolve(data.temporaryCode);
