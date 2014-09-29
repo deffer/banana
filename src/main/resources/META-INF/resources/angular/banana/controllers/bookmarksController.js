@@ -60,13 +60,23 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 			function(data){
 				console.log(data);
 				alertsService.dismissAllWithCode(alertsService.CODE_NO_BOOKMARKS);
-				var match = bookmarksShuffle.updateAfterBookmarkChanged(data, modifying);
-				if (!match){
-					alertsService.addInfo("Your bookmark has been saved",
-						["Please note that you wouldn't see this bookmark because of your current filter"]);
+				var details = [];
+				var match = true;
+				if ($scope.bookmarkStore.example && mainService.signedIn){
+					details.push("Example bookmarks have been removed");
+					$scope.loadBookmarks([data]);
+					match = bookmarksShuffle.matchesFilter(data, $scope.bookmarkStore.filter);
 				}else{
-					alertsService.addNotice("Your bookmark has been saved");
+					match = bookmarksShuffle.updateAfterBookmarkChanged(data, modifying);
 				}
+				if (!match){
+					details.push("Please note that you wouldn't see this bookmark because of your current filter");
+				}
+				if (_.isEmpty(details))
+					alertsService.addPopup("Your bookmark has been saved");
+				else
+					alertsService.addInfo("Your bookmark has been saved", details).code=alertsService.CODE_NO_BOOKMARKS;
+
 				$scope.closeQuickAdd();
 			}, function(error){
 				alertsService.addError('Server error', ['Unable to save bookmark. Please try again later']);
@@ -78,10 +88,10 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	$scope.getBookmarksFromServer = function () {
 		backend.getBookmarks().then(function (results) {
 			if (_.isUndefined(results) || _.isEmpty(results) || _.isNull(results) || results == 'null') {
-				console.log("Empty response. IGNORE.");
+				console.log("Empty response.");
 				alertsService.addInfo("You don't have any saved bookmarks.",
 					[
-						"You can browse example bookmarks or start adding new.",
+						"You can browse example bookmarks or start adding new. Examples will be removed automatically once you add your first record.",
 						"To import from your own google bookmarks XML file, go to 'Edit' -> 'Import from file'",
 						"You can also use this import with the JSON file you previously exported"
 					]).code=alertsService.CODE_NO_BOOKMARKS;
@@ -89,17 +99,21 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 			} else{
 				alertsService.dismissAllWithCode(alertsService.CODE_NO_BOOKMARKS);
 			}
-			console.log("Updating folders");
 
-			mainService.convertFromServer(results);
+			$scope.loadBookmarks(results);
 
-			$scope.selectedFolder = $scope.bookmarkStore.displayFolders.length>1?
-				$scope.bookmarkStore.displayFolders[1] : $scope.bookmarkStore.displayFolders[0];
-			console.log("Selected folder is "+$scope.selectedFolder.id);
-			$scope.uploadFileCollapsed = true;
 		}, function(rejection){
 			alertsService.addError("Unable to load bookmarks from server. Please try again later")
 		});
+	};
+
+	$scope.loadBookmarks = function(bookmarks){
+		mainService.convertFromServer(bookmarks);
+		$scope.bookmarkStore.example = false;
+		$scope.selectedFolder = $scope.bookmarkStore.displayFolders.length>1?
+			$scope.bookmarkStore.displayFolders[1] : $scope.bookmarkStore.displayFolders[0];
+		console.log("Selected folder is "+$scope.selectedFolder.id);
+		$scope.uploadFileCollapsed = true;
 	};
 
 	$scope.setSelectedFolder = function(folder){

@@ -15,6 +15,7 @@ iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backen
 					$scope.signedIn = true;
 					$scope.authnInfo.name = profile.displayName;
 					$scope.authnInfo.userid = profile.id;
+					mainService.setSignedIn($scope.authnInfo);
 					console.log("Profile loaded. User id: "+profile.id); // ex. 102477976455620241458
 					// connect server. server will upgrade the code into access token
 					backend.authenticate(profile.id, $scope.authnInfo.code)

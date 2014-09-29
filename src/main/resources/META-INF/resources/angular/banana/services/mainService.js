@@ -3,6 +3,7 @@ iBookmarks.app.factory('mainService', function(backend, bookmarksShuffle){
 		// data shared between all controllers
 		bookmarkStore : bookmarksShuffle.useExampleStore(),
 		authnInfo: {},
+		signedIn: false,
 		sessionToken : iBookmarks.sessionToken,
 
 		convertFromServer : function(data){
@@ -11,6 +12,16 @@ iBookmarks.app.factory('mainService', function(backend, bookmarksShuffle){
 
 		isUndefined : function(obj){
 			return _.isUndefined(obj) || _.isNull(obj);
+		},
+
+		setSignedIn: function(authnInfo){
+			service.signedIn = true;
+			service.authnInfo = authnInfo;
+		},
+
+		setLogOut: function(){
+			service.signedIn = false;
+			service.authnInfo = {};
 		}
 	};
 

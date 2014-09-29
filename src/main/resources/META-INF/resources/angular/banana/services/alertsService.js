@@ -39,7 +39,7 @@ iBookmarks.app.factory('alertsService', function ($timeout) {
 		 * This will be auto dismissed after 4 seconds
 		 * @param message
 		 */
-		addNotice: function(message){
+		addPopup: function(message){
 			var alert = {message: message, type: 'success'};
 			return service.addAlert(alert, true);
 		},

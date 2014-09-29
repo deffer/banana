@@ -285,6 +285,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 			service.filterByPartial([]);
 			service.updateUrlMap();
+			bookmarkStore.example = true;
 			return bookmarkStore;
 		}
 	};
