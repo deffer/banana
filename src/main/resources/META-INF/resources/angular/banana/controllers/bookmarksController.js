@@ -47,7 +47,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 	$scope.addGoogleBookmark = function () {
 		var modifying = null;
-		if (mainService.isUndefined($scope.currentInputId)){
+		if (!mainService.isUndefined($scope.currentInputId)){
 			modifying = bookmarksShuffle.getBookmark($scope.currentInputId);
 			console.log("Saving a change to the entry "+$scope.currentInputId);
 			console.log(modifying);
@@ -180,8 +180,12 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	};
 
 	$scope.deleteBookmark = function(bookmark){
-		console.log("Asked to delete");
-		console.log(bookmark)
+		backend.deleteBookmark(bookmark.id).then(function(data){
+			bookmarksShuffle.updateAfterBookmarkDeleted(bookmark);
+			alertsService.addPopup("Your bookmark has been deleted");
+		}, function(error){
+			alertsService.addError("Error deleting bookmark", [error]);
+		});
 	};
 
 	$scope.canUpload = function(){

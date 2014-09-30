@@ -51,7 +51,7 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 			var defer = $q.defer();
 			var promise = defer.promise;
 			$http({method: 'POST', url: UOA.endpoints.bookmarks.change,
-				data: {id: id, title: title, url: url, labels: labels, sessionToken: backend.sessionToken}}).
+				data: {action: 'save', id: id, title: title, url: url, labels: labels, sessionToken: backend.sessionToken}}).
 				success(function(data, status, headers, config) {
 					defer.resolve(data);
 				}).

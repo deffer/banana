@@ -50,9 +50,9 @@ class UploadBookmarksStencil extends TextFileUploadStencil {
 			}
 
 			if (currentUser){
-				bookmarksStore.addUserBookmarks(currentUser, bookmarks)
+				bookmarksStore.addBookmarks(currentUser, bookmarks)
 			}else{
-				bookmarksStore.addSessionBookmarks(userStore.sessionId, bookmarks)
+				bookmarksStore.addBookmarks(null, bookmarks, userStore.sessionId)
 			}
 
 		}catch (Exception e){

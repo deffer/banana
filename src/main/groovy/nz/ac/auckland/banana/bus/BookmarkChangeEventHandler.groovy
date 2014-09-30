@@ -31,24 +31,28 @@ class BookmarkChangeEventHandler{
 
 		String responseId = requestType.id
 		if (action=='delete'){
-			log.info("Deleting bookmark ${requestType.id}")
-			// TODO delete bookmark
+
+			String currentUser = userStore.userId
+			log.info("Deleting bookmark ${requestType.id} of user $currentUser")
+			if (!offline){
+				responseId = bookmarksStore.deleteBookmark(currentUser, responseId, (currentUser ? null : userStore.sessionId))
+			}
 			return new BookmarkChangeResponse(id: responseId)
-		}else{
+
+		}else if (action in ['add', 'save', 'change', 'update', 'new', 'edit']){
+
 			def bookmark = requestType.properties.subMap(['id', 'title', 'url', 'labels'])
 			bookmarksStore.prepareBookmark(bookmark)
 
 			String currentUser = userStore.userId
 			log.debug("Saving for: User $currentUser, session ${userStore.sessionId}, labels ${bookmark.labels}")
 			if (!offline){
-				if (currentUser){
-					responseId = bookmarksStore.saveUserBookmark(currentUser, bookmark)
-				}else{
-					responseId = bookmarksStore.saveSessionBookmark(userStore.sessionId, bookmark)
-				}
+				responseId = bookmarksStore.saveBookmark(currentUser, bookmark, (currentUser ? null : userStore.sessionId))
 			}
 			return new BookmarkChangeResponse(id: responseId, title: bookmark.title, url: bookmark.url, labels: bookmark.labels)
+
 		}
+		throw new CapturedException("Unknown command $action")
 	}
 
 	static class BookmarkChangeRequest extends BasicRequest{

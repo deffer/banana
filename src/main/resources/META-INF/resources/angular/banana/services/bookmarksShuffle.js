@@ -223,17 +223,21 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		updateAfterBookmarkDeleted: function(b){
 			var id = b.id;
 			if (b.labels && b.labels.length>0){
+				console.log("Removing labels");
+				console.log(b.labels);
 				_.each(b.labels, function(label){
 					service.removeFromListById(bookmarkStore.folders[label], id);
 					service._updateFoldersCount(label);
 				});
 			}else{
+				console.log("Bookmark was unlabelled? "+id);
 				service.removeFromListById(bookmarkStore.folders[service.folderUnlabelled.id], id);
 				service._updateFoldersCount(service.folderUnlabelled.id);
 			}
 			service.removeFromListById(bookmarkStore.folders[service.folderAll.id], id);
 			service._updateFoldersCount(service.folderAll.id);
 
+			console.log("Removing from urls list for '"+ b.url+" id="+id);
 			service.removeFromListById(bookmarkStore.urlsMap[b.url], id);
 			service.removeFromListById(bookmarkStore.all, id);
 		},

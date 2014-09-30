@@ -50,7 +50,7 @@
 
 <div class="container">
 
-<div class="well well-large"> <div class="controls controls-row">
+<div class="well well-large"> <div class="row">
 
 	<div ng-controller="iBookmarks.app.LoginCtrl" class="span4">
 		<div ng-show="!signedIn" style="margin-bottom: 10px;">
@@ -77,6 +77,7 @@
 		</div>
 
 		<div ng-show="signedIn">
+			<div>
 			You are logged in as
 			<span title="Your google id is: {{authnInfo.userid}}" ng-show="authnInfo.name">{{authnInfo.name}}</span>
 			<span ng-show="!(authnInfo.name)">
@@ -88,11 +89,11 @@
 			    </span>
 				</a>
 			</span>
-
-			<button class="btn" ng-click="logOut()">Log out</button>
+			</div>
+			<div><button class="btn" ng-click="logOut()">Log out</button> </div>
 		</div>
 	</div>
-	<div ng-controller="iBookmarks.app.AlertsPopupCtrl" class="span6">
+	<div ng-controller="iBookmarks.app.AlertsPopupCtrl" class="span6" style="min-height: 75px;">
 		<bm-alert ng-repeat="alert in alertsPopup track by $index" alert-object="alert"></bm-alert>
 	</div>
 </div></div>
