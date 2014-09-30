@@ -196,7 +196,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	$scope.export2JSON = function(){
 		//location.href=backend.DOWNLOAD_BOOKMARKS_URL; // NOT $window.open(backend.DOWNLOAD_BOOKMARKS_URL);
 		backend.downloadBookmarks().then(function(temporaryCode){
-			location.href=backend.DOWNLOAD_BOOKMARKS_URL+"/"+temporaryCode;
+			location.href=backend.DOWNLOAD_BOOKMARKS_URL + temporaryCode;
 		}, function(rejection){
 			alertsService.addError("Download failed. Please try again");
 		});

@@ -2,7 +2,7 @@ iBookmarks.app.factory('backend', function ($q, $http) {
 
 	var backend = {
 		sessionToken: null,   // is set by mainService
-		DOWNLOAD_BOOKMARKS_URL : 'rest/bookmarks/download',
+		DOWNLOAD_BOOKMARKS_URL : 'download/',
 
 		callUtils: function (action, input, input2) {
 			var defer = $q.defer();

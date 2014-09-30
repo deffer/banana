@@ -24,7 +24,7 @@ class UserStore {
 	// holds a temporary access keys used for downloading files. key should expire after 15 seconds or after being used.
 	// set would suffice, but I cant find a suitable implementation, therefore going with Cache
 	Cache<String, String> tempAccessKeys = CacheBuilder.newBuilder().concurrencyLevel(4)
-			.weakKeys().maximumSize(10000).expireAfterWrite(15, TimeUnit.SECONDS)
+			.maximumSize(10000).expireAfterWrite(15, TimeUnit.SECONDS)
 			.build()
 
 
