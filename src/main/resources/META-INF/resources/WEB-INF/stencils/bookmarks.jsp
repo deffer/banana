@@ -175,7 +175,8 @@
 
 		<div class="row">
 			<i title="Add bookmark" class="icon-plus pull-right" ng-click="newBookmark()"
-			   style="cursor: pointer; margin-left: 20px;"></i>
+			   style="cursor: pointer;"></i>
+			<span class="pull-right" style="margin-left: 20px; margin-right: 5px; cursor: pointer;" ng-click="newBookmark()">Add</span>
 			<span class="pull-right">Edit mode </span>
 			<input class="pull-right" type="checkbox" ng-model="editMode"/>
 		</div>
