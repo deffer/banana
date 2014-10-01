@@ -30,11 +30,9 @@
 
             <div class="controls control-row">
                 <button class="btn" ng-click="close()">Cancel</button>
-                <button type="submit" class="btn pull-right btn-primary" style="margin-bottom:10px;"
-                        ng-disabled="!inputUrl"
-                        ng-click="saveBookmark();">Save</button>
+                <button type="submit" class="btn pull-right btn-primary"
+                        ng-disabled="!inputUrl"  ng-click="saveBookmark();">Save</button>
             </div>
-            <div class="controls control-group"></div>
         </div>
     </div>
 </div>

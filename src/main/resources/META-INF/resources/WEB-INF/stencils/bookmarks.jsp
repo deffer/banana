@@ -129,10 +129,11 @@
 						<li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
 						<li><a href="" ng-click="openImport()">Import from file..</a></li>
 						<li><a href="" ng-click="export2JSON()" class="pull-left">Export...</a>
-							<i class="icon-download-alt pull-left" style="margin-top: 7px;"></i></li>
-						<li><a href="" class="pull-left">Edit mode </a>
-							<input type="checkbox" ng-model="editMode" class="pull-left" style="margin-top: 7px;"/>
+							<i class="icon-download-alt pull-left" style="margin-top: 7px;"></i>
 						</li>
+						<!--li><a href="" class="pull-left">Edit mode </a>
+							<input type="checkbox" ng-model="editMode" class="pull-left" style="margin-top: 7px;"/>
+						</li-->
 					</ul>
 				</div>
 
@@ -172,8 +173,11 @@
 			</ul>
 		</div>
 
-		<div class="offset1">
-			<i title="Add bookmark" class="icon-plus" ng-click="newBookmark()" style="cursor: pointer;"></i>
+		<div class="row">
+			<i title="Add bookmark" class="icon-plus pull-right" ng-click="newBookmark()"
+			   style="cursor: pointer; margin-left: 20px;"></i>
+			<span class="pull-right">Edit mode </span>
+			<input class="pull-right" type="checkbox" ng-model="editMode"/>
 		</div>
 
 		<ul class="unstyled">
