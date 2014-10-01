@@ -47,7 +47,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 	$scope.addGoogleBookmark = function () {
 		var modifying = null;
-		if (!mainService.isUndefined($scope.currentInputId)){
+		if (!mainService.helper.isNotDefined($scope.currentInputId)){
 			modifying = bookmarksShuffle.getBookmark($scope.currentInputId);
 			console.log("Saving a change to the entry "+$scope.currentInputId);
 			console.log(modifying);
@@ -87,7 +87,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 	$scope.getBookmarksFromServer = function () {
 		backend.getBookmarks().then(function (results) {
-			if (_.isUndefined(results) || _.isEmpty(results) || _.isNull(results) || results == 'null') {
+			if (mainService.helper.isEmpty(results)) {
 				console.log("Empty response.");
 				alertsService.addInfo("You don't have any saved bookmarks.",
 					[
@@ -125,8 +125,16 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	});
 
 	$scope.$watch('inputUrl', function () {
+		if (!$scope.inputUrl)
+			return;
+
 		console.log("Reacting on change "+$scope.inputUrl);
 		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl); // TODO [add currently modifying bookmark to skip thi match
+		if (!$scope.suggestedBookmark && !$scope.currentInputId && !$scope.inputTitle){
+			var guess = mainService.helper.guessUrlTitle($scope.inputUrl);
+			if (guess)
+				$scope.inputTitle = guess;
+		}
 	});
 
 	$scope.populateSuggested = function(){

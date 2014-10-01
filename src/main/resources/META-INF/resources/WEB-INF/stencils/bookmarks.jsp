@@ -32,6 +32,9 @@
 	<jawr:script src="/bundles/third-party.js"/>
 	<jawr:script src="/bundles/banana-app.js"/>
 
+	<!-- integrate Underscore.string with Underscore -->
+	<script type="text/javascript">_.mixin(_.str.exports());</script>
+
 	<title>iBookmarks</title>
 
 	<script type="text/ng-template" id="/alert.html">
