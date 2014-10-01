@@ -2,6 +2,7 @@ body {
 	overflow-y:scroll;
 }
 
+/* Upload file dialog */
 button.btn:focus {
     outline : none;
 }
@@ -25,6 +26,8 @@ button.btn:focus {
     direction: ltr;
     cursor: pointer;
 }
+
+/* Folders selection dropdown, bootrstrap style */
 .dropdown-menu > li.cct{
     padding: 0 10px;
 }
@@ -36,6 +39,7 @@ button.btn:focus {
 	font-weight: bold;
 }
 
+/* Modal dialog */
 .modal-box {
 	position: absolute;
 	z-index: 1001;
@@ -78,6 +82,7 @@ button.btn:focus {
 	display: block;
 }
 
+/* Fancy tooltip (looking like callout) */
 a.nicetooltip {outline:none; }
 a.nicetooltip strong {line-height:30px;}
 a.nicetooltip:hover {text-decoration:none;}
@@ -96,4 +101,26 @@ a.nicetooltip span
 {
 	border-radius:4px;
 	box-shadow: 5px 5px 8px #CCC;
+}
+
+/* Small toolbar below Folders selection dropdown */
+.smalltoolbar{
+	cursor: pointer;
+	border-radius: 2px;
+	box-shadow: 0 0 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+.smalltoolbar.checked{
+	border-radius: 2px;
+	box-shadow: 0 0 2px;
+	background: #d9d9d9;
+	/*border-top: solid 1px #777;
+	border-left: solid 1px #777;
+	border-bottom:solid 1px  #eaeaea;
+	border-right: solid 1px #eaeaea;*/
+}
+
+.smalltoolbar input[type="checkbox"]{
+	margin-top: 0;
 }

@@ -174,11 +174,14 @@
 		</div>
 
 		<div class="row">
-			<i title="Add bookmark" class="icon-plus pull-right" ng-click="newBookmark()"
-			   style="cursor: pointer;"></i>
-			<span class="pull-right" style="margin-left: 20px; margin-right: 5px; cursor: pointer;" ng-click="newBookmark()">Add</span>
-			<span class="pull-right">Edit mode </span>
-			<input class="pull-right" type="checkbox" ng-model="editMode"/>
+			<div class="smalltoolbar pull-right" ng-class="{checked: editMode}"style="margin-left: 20px;">
+				<!--input type="checkbox" ng-model="editMode"/-->
+				<span ng-click="editMode = !editMode">Edit mode </span>
+			</div>
+			<div class="smalltoolbar pull-right">
+				<span style="margin-right: 5px;" ng-click="newBookmark()">Add</span>
+				<i title="Add bookmark" class="icon-plus" ng-click="newBookmark()"></i>
+			</div>
 		</div>
 
 		<ul class="unstyled">
