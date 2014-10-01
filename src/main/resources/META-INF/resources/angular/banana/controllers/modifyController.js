@@ -2,17 +2,10 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 	function($scope, $rootScope, $window, $timeout, backend, bookmarksShuffle, mainService) {
 
 	// div's visibility flags
-	$scope.addBookmarkCollapsed = true;
-	$scope.uploadFileCollapsed = true;
-	$scope.editMode = false;
+	$scope.visible = false;
 
 	// currently displayed bookmarks
 	$scope.bookmarkStore = mainService.bookmarkStore;
-	/*
-	$scope.urlsMap = backend.getExampleUrlsMap();      // { url1: [bId1, bId2], url2: [bId1, bId3]}
-	$scope.folders = backend.getExampleFolders();      // [ {id: abc, name: alphabet},  {id: xyz, name: else}]
-	$scope.bookmarks = backend.getExampleBookmarks();  // { abc: [b1, b2, b3],  xyz: [b1]}
-    */
 
 	// for Add Bookmark
 	$scope.currentInputId = null;
@@ -26,6 +19,53 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 		'tags': function(){
 			return _.pluck($scope.bookmarkStore.foldersList, 'id')
 		}
+	};
+
+
+	$scope.saveBookmark = function(){
+		var modifying = null;
+		if (!mainService.helper.isNotDefined($scope.currentInputId)){
+			modifying = bookmarksShuffle.getBookmark($scope.currentInputId);
+			console.log("Saving a change to the entry "+$scope.currentInputId);
+			console.log(modifying);
+			console.log($scope.currentInputId+" - '"+$scope.inputTitle+"'  ["+$scope.inputLabels+"] "+ $scope.inputUrl);
+		}else{
+			console.log("Adding entry "+$scope.currentInputId+" - '"+$scope.inputTitle+"'  ["+$scope.inputLabels+"] "+ $scope.inputUrl);
+		}
+
+		backend.saveBookmark($scope.inputTitle, $scope.inputUrl, $scope.inputLabels, $scope.currentInputId).then(
+			function(data){
+				$rootScope.$broadcast('bookmarkSaved', data, modifying);
+				$scope.visible = false;
+			}, function (error){
+				$rootScope.$broadcast('bookmarkSaveFailed', error);
+				$scope.visible = false;
+			}
+		);
+	};
+
+	$scope.$watch('inputUrl', function () {
+		if (!$scope.inputUrl)
+			return;
+
+		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl, $scope.currentInputId);
+		if (!$scope.suggestedBookmark && !$scope.currentInputId && !$scope.inputTitle){
+			var guess = mainService.helper.guessUrlTitle($scope.inputUrl);
+			if (guess)
+				$scope.inputTitle = guess;
+		}
+	});
+
+	$scope.populate = function(suggestedBookmark){
+		$scope.populate($scope.suggestedBookmark);
+		$scope.suggestedBookmark = null;
+	};
+
+	$scope.populate = function(suggestedBookmark){
+		$scope.currentInputId = suggestedBookmark.id;
+		$scope.inputUrl = suggestedBookmark.url;
+		$scope.inputTitle = suggestedBookmark.title;
+		$scope.inputLabels = suggestedBookmark.labels;
 	};
 
 	/**
@@ -49,51 +89,29 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 			cont.css('top', top+"px");
 		}, 100);
 
-		$scope.addBookmarkCollapsed = false;
+		$scope.visible = true;
 	};
 
-	$scope.openImport = function () {
-		$scope.uploadFileCollapsed = false;
-		$scope.addBookmarkCollapsed = true;
-	};
 
-	$scope.saveBookmark = function () {
-		var id = $scope.currentInputId;
-		backend.saveBookmark($scope.inputTitle, $scope.inputUrl, $scope.inputLabels, $scope.currentInputId).then(function(results){
-		   console.log(results);
-		});
-		$scope.closeQuickAdd();
-		$rootScope.$broadcast('bookmarkChanged', id);
-	};
-
-	$scope.$watch('inputUrl', function () {
-		/*if ($scope.editMode && $scope.currentInputId){
-			return;
-		} */
-		console.log("Reacting on change "+$scope.inputUrl);
-		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl);
-	});
-
-	$scope.populateSuggested = function(){
-		$scope.currentInputId = $scope.suggestedBookmark.id;
-		$scope.inputTitle = $scope.suggestedBookmark.title;
-		$scope.inputLabels = $scope.suggestedBookmark.listFolders;
-		$scope.suggestedBookmark = null;
-	};
-
-	$scope.closeQuickAdd = function(){
+	$scope.close = function(){
 		$scope.currentInputId = null;
 		$scope.inputUrl = "";
 		$scope.inputTitle = "";
 		$scope.inputLabels = null;
 		$scope.suggestedBookmark = null;
-
 		$scope.addBookmarkCollapsed=true;
+
+		$scope.visible = false;
 	};
 
 
 	$rootScope.$on('editBookmark', function(e, bookmark){
 		console.log(bookmark);
+		$scope.populate(bookmark);
+		$scope.openAddBookmark();
+	});
+
+	$rootScope.$on('newBookmark', function(e){
 		$scope.openAddBookmark();
 	});
 

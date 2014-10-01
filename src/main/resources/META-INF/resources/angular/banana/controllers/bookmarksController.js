@@ -128,7 +128,6 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 		if (!$scope.inputUrl)
 			return;
 
-		console.log("Reacting on change "+$scope.inputUrl);
 		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl); // TODO [add currently modifying bookmark to skip thi match
 		if (!$scope.suggestedBookmark && !$scope.currentInputId && !$scope.inputTitle){
 			var guess = mainService.helper.guessUrlTitle($scope.inputUrl);
@@ -181,9 +180,11 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 		}
 	};
 
+	$scope.newBookmark = function(){
+		$rootScope.$broadcast('newBookmark');
+	};
+
 	$scope.editBookmark = function(bookmark){
-		console.log("Asked to save");
-		console.log(bookmark);
 		$rootScope.$broadcast('editBookmark', bookmark);
 	};
 
@@ -213,6 +214,34 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 			alertsService.addError("Download failed. Please try again");
 		});
 	};
+
+	$rootScope.onBookmarkSaved = function(e, data, modifying){
+		alertsService.dismissAllWithCode(alertsService.CODE_NO_BOOKMARKS);
+		var details = [];
+		var match = true;
+		if ($scope.bookmarkStore.example && mainService.signedIn){
+			details.push("Example bookmarks have been removed");
+			$scope.loadBookmarks([data]);
+			match = bookmarksShuffle.matchesFilter(data, $scope.bookmarkStore.filter);
+		}else{
+			match = bookmarksShuffle.updateAfterBookmarkChanged(data, modifying);
+		}
+		if (!match){
+			details.push("Please note that you wouldn't see this bookmark because of your current filter");
+		}
+		if (_.isEmpty(details))
+			alertsService.addPopup("Your bookmark has been saved");
+		else
+			alertsService.addInfo("Your bookmark has been saved", details).code=alertsService.CODE_NO_BOOKMARKS;
+	};
+
+
+	$rootScope.onBookmarkSaveFailed = function(e, error){
+		alertsService.addError('Server error', ['Unable to save bookmark. Please try again later']);
+	};
+
+	$rootScope.$on('bookmarkSaved', $scope.onBookmarkSaved);
+	$rootScope.$on('bookmarkSaveFailed', $scope.onBookmarkSaveFailed);
 
 	$rootScope.$on('successSignIn', function(e, data){
 		$scope.getBookmarksFromServer();

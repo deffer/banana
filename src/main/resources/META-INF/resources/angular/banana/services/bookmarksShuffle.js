@@ -122,14 +122,16 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		checkBookmarkExists : function(inputUrl, exceptThisBookmarkId){
 			var urlsMap = bookmarkStore.urlsMap;
 			if (inputUrl && urlsMap[inputUrl]){ // get first bookmarks that match entered url
-				var b = _.find(urlsMap[inputUrl], function (item){return (!exceptThisBookmarkId) || exceptThisBookmarkId == item.id});
-				console.log("Bookmarks with this url exists...");
-				var result = {id: b.id, title: b.title, url:inputUrl,listFolders: b.labels,
-					shortTitle: b.title.substring(0, _.min(b.title.length, 15))
-				};
-				console.log("Suggesting...");
-				console.log(result);
-				return result;
+				var b = _.find(urlsMap[inputUrl], function (item){return (!exceptThisBookmarkId) || exceptThisBookmarkId != item.id});
+				if (b){
+					console.log("Bookmarks with this url exists...");
+					var result = {id: b.id, title: b.title, url:inputUrl, labels: b.labels,
+						shortTitle: b.title.substring(0, _.min(b.title.length, 15))
+					};
+					console.log("Suggesting...");
+					console.log(result);
+					return result;
+				}
 			}
 			return null;
 		},

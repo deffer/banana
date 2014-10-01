@@ -172,6 +172,10 @@
 			</ul>
 		</div>
 
+		<div class="offset1">
+			<i title="Add bookmark" class="icon-plus" ng-click="newBookmark()" style="cursor: pointer;"></i>
+		</div>
+
 		<ul class="unstyled">
 			<li ng-repeat="b in selectedBookmarks">
 				<div>

@@ -5,6 +5,7 @@ iBookmarks.app.factory('mainService', function(backend, bookmarksShuffle, helper
 		authnInfo: {},
 		signedIn: false,
 		sessionToken : iBookmarks.sessionToken,
+
 		helper: helperService,
 
 		convertFromServer : function(data){
