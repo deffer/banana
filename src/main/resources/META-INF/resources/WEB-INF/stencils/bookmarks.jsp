@@ -108,69 +108,67 @@
 
 <div ng-controller="iBookmarks.app.BookmarksCtrl" name="leftColumn">
 
-	<div class="well span4">
+	<div class="well span4" id="leftPanel">
 
 		<div name="manageBlock">
 			<div class="controls controls-row">
 				<!--input class="span3" type="text" style="display:block;" ng-model="filterInput" ng-change="onFilterChange()" placeholder="search..."-->
 				<div class="input-append">
-					<input class="span2" id="appendedInputButton" type="text" ng-model="filterInput"
+					<input class="span3" id="appendedInputButton" type="text" ng-model="filterInput"
 					       ng-on-enter="filterKeypress()" placeholder="filter...">
-					<button class="btn" type="button" ng-click="filterAction()" ng-disabled="!validFilter()">Go!
-					</button>
+					<button class="btn" type="button" ng-click="filterAction()" ng-disabled="!validFilter()">Go!</button>
 				</div>
-
-				<div class="btn-group pull-right" style="margin-bottom: 10px;">
-					<button class="btn span1 dropdown-toggle" data-toggle="dropdown">
-						Edit
-						<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu">
-						<li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
-						<li><a href="" ng-click="openImport()">Import from file..</a></li>
-						<li><a href="" ng-click="export2JSON()" class="pull-left">Export...</a>
-							<i class="icon-download-alt pull-left" style="margin-top: 7px;"></i>
-						</li>
-						<!--li><a href="" class="pull-left">Edit mode </a>
-							<input type="checkbox" ng-model="editMode" class="pull-left" style="margin-top: 7px;"/>
-						</li-->
-					</ul>
-				</div>
-
 			</div>
+
 			<div ng-show="bookmarkStore.filterOn">
 				<a href="" ng-click="clearFilter()" style="font-size: small;">Clear filter</a>
 			</div>
-
-			<!-- bookmarks add panel -->
-			<%@include file="_bookmarks_add.jsp" %>
-
-			<!-- bookmarks import panel -->
-			<%@include file="_bookmarks_import.jsp" %>
-
-			<div>
-				<hr>
-			</div>
-
 		</div>
 
 
-	<!--select class="span4" style="display:block;" ng-model="selectedFolder"
-		ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select-->
+		<!--select class="span4" style="display:block;" ng-model="selectedFolder"
+			ng-options="folder.id as folder.name for folder in bookmarkStore.displayFolders"></select-->
+		<div class="controls controls-row">
+			<div class="btn-group" style="margin-bottom: 10px;">
+				<button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: right;">
+					{{selectedFolder.name}}
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li ng-repeat="folder in bookmarkStore.displayFolders" class="cct">
+						<a class="cct" href="" ng-click="setSelectedFolder(folder)"
+						   ng-class="{boldit: (bookmarkStore.folders[folder.id].length>0 && bookmarkStore.filterOn)}">
+							{{folder.name}}
+						</a>
+					</li>
+				</ul>
+			</div>
 
-		<div class="btn-group" style="margin-bottom: 10px;">
-			<button class="btn span3 dropdown-toggle" data-toggle="dropdown" style="text-align: right;">
-				{{selectedFolder.name}}
-				<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu">
-				<li ng-repeat="folder in bookmarkStore.displayFolders" class="cct">
-					<a class="cct" href="" ng-click="setSelectedFolder(folder)"
-					   ng-class="{boldit: (bookmarkStore.folders[folder.id].length>0 && bookmarkStore.filterOn)}">
-						{{folder.name}}
-					</a>
-				</li>
-			</ul>
+			<div class="btn-group pull-right" style="margin-bottom: 10px;">
+				<button class="btn span1 dropdown-toggle" data-toggle="dropdown">...
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
+					<li><a href="" ng-click="openImport()">Import from file..</a></li>
+					<li><a href="" ng-click="export2JSON()" class="pull-left">Export...</a>
+						<i class="icon-download-alt pull-left" style="margin-top: 7px;"></i>
+					</li>
+					<!--li><a href="" class="pull-left">Edit mode </a>
+						<input type="checkbox" ng-model="editMode" class="pull-left" style="margin-top: 7px;"/>
+					</li-->
+				</ul>
+			</div>
+		</div>
+
+		<!-- bookmarks add panel -->
+		<%@include file="_bookmarks_add.jsp" %>
+
+		<!-- bookmarks import panel -->
+		<%@include file="_bookmarks_import.jsp" %>
+
+		<div>
+			<hr>
 		</div>
 
 		<div class="row">

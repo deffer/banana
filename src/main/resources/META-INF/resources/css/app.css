@@ -124,3 +124,7 @@ a.nicetooltip span
 .smalltoolbar input[type="checkbox"]{
 	margin-top: 0;
 }
+
+#leftPanel hr {
+	margin: 5px 0 10px 0;
+}
