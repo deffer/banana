@@ -124,7 +124,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			if (inputUrl && urlsMap[inputUrl]){ // get first bookmarks that match entered url
 				var b = _.find(urlsMap[inputUrl], function (item){return (!exceptThisBookmarkId) || exceptThisBookmarkId != item.id});
 				if (b){
-					console.log("Bookmarks with this url exists...");
 					var result = {id: b.id, title: b.title, url:inputUrl, labels: b.labels,
 						shortTitle: b.title.substring(0, _.min(b.title.length, 15))
 					};
@@ -149,7 +148,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		 * If its edit, find and change existing entry. Also will need to change folders (if labels changed)
 		 *    and url map (if url changed). Don't forget to take care of Unlabelled folder too.
 		 *
-		 *
 		 * Returns true if bookmark matches current filter
 		 * @param data
 		 * @param existing
@@ -158,6 +156,9 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			var b = existing ? existing : data;
 			var id = b.id;
 
+			var previousLabels = service._getLogicalLabels(existing);
+			var newLabels = service._getLogicalLabels(data);
+
 			var urlChanged = (existing && existing.url != data.url);
 
 			var matchesFilter = true;
@@ -165,17 +166,18 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				matchesFilter = service.matchesFilter(b, bookmarkStore.filter);
 			}
 
-			// ensure folders are initialized with empty array
-			_.each(data.labels, function(label){
+			// ensure folders are initialized with empty array (also Unlabelled)
+			_.each(newLabels, function(label){
 				if (_.isUndefined(bookmarkStore.folders[label])){
 					bookmarkStore.folders[label] = [];
 				}
 			});
 
-			// update url maps if necessary
+			// remove from previous url map
 			if (urlChanged){
 				service.removeFromListById(bookmarkStore.urlsMap[existing.url], id);
 			}
+			// add to new url map
 			if (_.isUndefined(bookmarkStore.urlsMap[data.url])){
 				bookmarkStore.urlsMap[data.url] = [b];
 			}else{
@@ -186,37 +188,38 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			// update folders
 			if (existing && _.difference(existing.labels, data.labels)){
 				// remove from folders
-				_.each(existing.labels, function(label){
-					if (!_.contains(data.labels, label)){
+				_.each(previousLabels, function(label){
+					if (!_.contains(newLabels, label)){
+						console.log("Losing label "+label+". Previous content is:");
 						console.log(bookmarkStore.folders[label]);
 						service.removeFromListById(bookmarkStore.folders[label], id);
-						service._updateFoldersCount(label); // decrease foldersList count
+						service._updateFoldersCount(label); // decrease count in foldersList entry
 					}
 				});
 			}
-			_.each(data.labels, function(label){
-				if (!existing || (existing && !_.contains(existing.labels, label))){
+			_.each(newLabels, function(label){
+				if (!_.contains(previousLabels, label)){
 					if (matchesFilter){
 						console.log("Adding folder "+label);
 						bookmarkStore.folders[label].push(b);
-						service._updateFoldersCount(label); // increase foldersList count
+						service._updateFoldersCount(label); // increase count in foldersList entry
 					}else{
 						console.log("Skip adding folder because entry doesn't match filter");
 					}
 				}
 			});
 
-			// TODO if data.labels empty and (folders changed or its new entry), need to add to unlabelled
-			// TODO if existing.labels empty and folders changed, remove from unlabelled.
-			// TODO update ALL if necessary
 
-			// update bookmark itself
 			if (existing){
+				// update bookmark itself
 				b.title = data.title;
 				b.url = data.url;
 				b.labels = data.labels;
 			}else{
+				// add to all
 				bookmarkStore.all.push(b);
+				bookmarkStore.folders[service.folderAll.id].push(b);
+				service._updateFoldersCount(service.folderAll.id);
 			}
 
 			return matchesFilter;
@@ -224,18 +227,15 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 		updateAfterBookmarkDeleted: function(b){
 			var id = b.id;
-			if (b.labels && b.labels.length>0){
-				console.log("Removing labels");
-				console.log(b.labels);
-				_.each(b.labels, function(label){
-					service.removeFromListById(bookmarkStore.folders[label], id);
-					service._updateFoldersCount(label);
-				});
-			}else{
-				console.log("Bookmark was unlabelled? "+id);
-				service.removeFromListById(bookmarkStore.folders[service.folderUnlabelled.id], id);
-				service._updateFoldersCount(service.folderUnlabelled.id);
-			}
+			var folders = service._getLogicalLabels(b);
+
+			console.log("Removing labels");
+			console.log(folders);
+			_.each(folders, function(label){
+				service.removeFromListById(bookmarkStore.folders[label], id);
+				service._updateFoldersCount(label);
+			});
+
 			service.removeFromListById(bookmarkStore.folders[service.folderAll.id], id);
 			service._updateFoldersCount(service.folderAll.id);
 
@@ -244,7 +244,19 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			service.removeFromListById(bookmarkStore.all, id);
 		},
 
+		// adds Unlabelled if necessary
+		_getLogicalLabels: function(bookmark){
+			if (_.isUndefined(bookmark) || _.isNull(bookmark))
+				return [];
 
+			if (_.isEmpty(bookmark.labels))
+				return [service.folderUnlabelled.id];
+			else
+				return bookmark.labels;
+		},
+
+		// takes care of removing folder (from foldersList and displayFolder) if its empty
+		// or adding if it didn't exist. based on the information in 'folders' map
 		_updateFoldersCount: function(label) {
 			var cnt = bookmarkStore.folders[label].length;
 			var folderInfo = service.getFolderById(label);
@@ -259,12 +271,13 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				}
 			}
 
-			folderInfo.count = cnt;
-			folderInfo.name = folderInfo.originalName+" ("+cnt+")";
 			if (cnt == 0){
 				console.log("Last item was removed from folder "+label+" - removing the reference");
 				service.removeFromListById(bookmarkStore.foldersList, label);
 				service.removeFromListById(bookmarkStore.displayFolders, label);
+			}else{
+				folderInfo.count = cnt;
+				folderInfo.name = folderInfo.originalName+" ("+cnt+")";
 			}
 		},
 

@@ -36,10 +36,10 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 		backend.saveBookmark($scope.inputTitle, $scope.inputUrl, $scope.inputLabels, $scope.currentInputId).then(
 			function(data){
 				$rootScope.$broadcast('bookmarkSaved', data, modifying);
-				$scope.visible = false;
+				$scope.close();
 			}, function (error){
 				$rootScope.$broadcast('bookmarkSaveFailed', error);
-				$scope.visible = false;
+				$scope.close();
 			}
 		);
 	};
@@ -99,7 +99,6 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 		$scope.inputTitle = "";
 		$scope.inputLabels = null;
 		$scope.suggestedBookmark = null;
-		$scope.addBookmarkCollapsed=true;
 
 		$scope.visible = false;
 	};
