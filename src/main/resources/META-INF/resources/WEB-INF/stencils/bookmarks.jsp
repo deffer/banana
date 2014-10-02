@@ -149,7 +149,7 @@
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu">
-					<li><a href="" ng-click="openAddBookmark()">Quick add..</a></li>
+					<!--li><a href="" ng-click="openAddBookmark()">Quick add..</a></li-->
 					<li><a href="" ng-click="openImport()">Import from file..</a></li>
 					<li><a href="" ng-click="export2JSON()" class="pull-left">Export...</a>
 						<i class="icon-download-alt pull-left" style="margin-top: 7px;"></i>
@@ -161,18 +161,15 @@
 			</div>
 		</div>
 
-		<!-- bookmarks add panel -->
-		<%@include file="_bookmarks_add.jsp" %>
-
 		<!-- bookmarks import panel -->
-		<%@include file="_bookmarks_import.jsp" %>
+		<%@include file="_bm_import.jsp" %>
 
 		<div>
 			<hr>
 		</div>
 
 		<div class="row">
-			<div class="smalltoolbar pull-right" ng-class="{checked: editMode}"style="margin-left: 20px;">
+			<div class="smalltoolbar pull-right" ng-class="{checked: editMode}" style="margin-left: 20px;">
 				<!--input type="checkbox" ng-model="editMode"/-->
 				<span ng-click="editMode = !editMode">Edit mode </span>
 			</div>
