@@ -23,6 +23,9 @@ iBookmarks.app.factory('helperService', function(){
 			if (domain == slug)
 				return null;
 
+			if (slug.indexOf('?')>0)
+				slug = _.strLeft(slug, '?');
+
 			if (slug.indexOf('.htm')>0){
 				slug = _.strLeft(slug, '.htm')
 			}else if (slug.indexOf('.php')>0){

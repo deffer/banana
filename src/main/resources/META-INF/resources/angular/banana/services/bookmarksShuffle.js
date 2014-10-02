@@ -48,12 +48,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			// group bookmarks into folders (labels)
 			_.each(bookmarkStore.all, function(b){
 				if (service.matchesFilter(b, filter)) {
-					var labels;
-					if (b.labels.length == 0){
-						labels = [service.folderUnlabelled.id]
-					}else{
-						labels = b.labels;
-					}
+					var labels = service._getLogicalLabels(b);
 					_.each(labels, function(label){
 						bookmarkStore.folders[label].push(b);
 					});
@@ -86,8 +81,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				folderEntry.count = items.length;
 				folderEntry.name = folderEntry.originalName+" ("+folderEntry.count+")"; // <--- label display name
 			});
-
-			console.log(bookmarkStore.displayFolders);
 
             return bookmarkStore;
 		},
@@ -293,14 +286,16 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 		useExampleStore : function(){
 			bookmarkStore.all = [
-				{url:"http://stackoverflow.com/questions/101268/hidden-features-of-python", title: "Hidden features of python", id: 1, labels: ["Development"]},
-				{url: "https://people.gnome.org/~federico/news-2008-11.html#pushing-and-pulling-with-git-1", title: "Pushing and pulling with git", id: 2, labels: ["Development"]},
-				{url: "http://justinhileman.info/article/git-pretty/", title: "How to git pretty", id: 3, labels: ["Development"]},
-				{url: "http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol", title: "Secure Remote Password protocol", id: 4, labels: ["Development"]},
-				{url: "http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf", title: "Netcat cheat sheet", id: 5, labels: ["Development", "Unix"]},
-				{url: "http://nealford.com/memeagora/2013/01/22/why_everyone_eventually_hates_maven.html", title: "Why everyone eventually hates maven", id: 6, labels: ["Development"]},
-				{url: "http://clippy.in/b/YJLM9W", title: "Favorite Linux Commands", id: 11, labels: ["Unix"]},
-				{url: "https://gist.github.com/nifl/1178878", title: "The 'Zen' of vi", id: 12, labels: ["Unix"]}];
+				{id: 1, url: "https://groovyconsole.appspot.com/", title: "Groovy web console", labels: ["Development"]},
+				{id: 2, url: "http://www.techempower.com/blog/2013/03/26/everything-about-java-8/", title: "Everything about java 8", labels: ["Development"]},
+				{id: 3, url: "https://people.gnome.org/~federico/news-2008-11.html#pushing-and-pulling-with-git-1", title: "Pushing and pulling with git", labels: ["Development"]},
+				{id: 4, url: "http://justinhileman.info/article/git-pretty/", title: "How to git pretty", labels: ["Development"]},
+				{id: 5, url: "http://www.regexplanet.com/advanced/java/index.html", title: "Regex test tool", labels: ["Development"]},
+				{id: 8, url: "http://paulherron.com/blog/vim_cheatsheet/", title: "Vim cheat sheet", labels: ["Development", "Unix"]},
+				{id: 9, url: "https://gist.github.com/nifl/1178878", title: "The Zen of vi", labels: ["Development", "Unix"]},
+				{id: 11, url: "http://clippy.in/b/YJLM9W", title: "Favorite Linux Commands", labels: ["Unix"]},
+				{id: 12, url: "http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf", title: "Netcat cheat sheet", labels: ["Unix"]}
+			];
 
 			service.filterByPartial([]);
 			service.updateUrlMap();
