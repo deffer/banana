@@ -36,17 +36,18 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 		backend.saveBookmark($scope.inputTitle, $scope.inputUrl, $scope.inputLabels, $scope.currentInputId).then(
 			function(data){
 				$rootScope.$broadcast('bookmarkSaved', data, modifying);
-				$scope.close();
 			}, function (error){
 				$rootScope.$broadcast('bookmarkSaveFailed', error);
-				$scope.close();
 			}
 		);
+		$scope.close();
 	};
 
 	$scope.$watch('inputUrl', function () {
-		if (!$scope.inputUrl)
+		if (!$scope.inputUrl){
+			$scope.suggestedBookmark = null;
 			return;
+		}
 
 		$scope.suggestedBookmark = bookmarksShuffle.checkBookmarkExists($scope.inputUrl, $scope.currentInputId);
 		if (!$scope.suggestedBookmark && !$scope.currentInputId && !$scope.inputTitle){
@@ -56,7 +57,7 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 		}
 	});
 
-	$scope.populate = function(suggestedBookmark){
+	$scope.populateSuggested = function(){
 		$scope.populate($scope.suggestedBookmark);
 		$scope.suggestedBookmark = null;
 	};

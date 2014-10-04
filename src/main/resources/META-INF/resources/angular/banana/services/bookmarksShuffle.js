@@ -88,14 +88,54 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		// create urls map for faster access
 		updateUrlMap : function(){
 			bookmarkStore.urlsMap = {};
-			_.each(_.pluck(bookmarkStore.all, 'url'), function(url){bookmarkStore.urlsMap[url] = []});
+			//_.each(_.pluck(bookmarkStore.all, 'url'), function(url){bookmarkStore.urlsMap[url] = []});
 			_.each(bookmarkStore.all, function (bookmark) {
-				var list = bookmarkStore.urlsMap[bookmark.url];
+				service._addToUrlMap(bookmark);
+				/*var list = bookmarkStore.urlsMap[bookmark.url];
 				if (!_.find(list, function(item) {return item.id == bookmark.id})){ // although we dont expect duplicate ids from server
 					list.push(bookmark);
-				}
+				} */
 			});
 			return bookmarkStore;
+		},
+
+		_addToUrlMap: function(bookmark){
+			var url = _.rtrim(bookmark.url, '/');
+			var urlMap = bookmarkStore.urlsMap[url];
+			if (_.isUndefined(urlMap)){
+				bookmarkStore.urlsMap[url] = [bookmark];
+			}else{
+				if (!_.find(urlMap, function(item){return item.id == bookmark.id}))
+					urlMap.push(bookmark);
+			}
+		},
+		_removeFromUrlMap: function(bookmark){
+			var url = _.rtrim(bookmark.url, '/');
+			var urlMap = bookmarkStore.urlsMap[url];
+			if (urlMap)
+				service.removeFromListById(urlMap, bookmark.id);
+		},
+
+		checkBookmarkExists : function(inputUrl, exceptThisBookmarkId){
+			if (!inputUrl) return;
+			if (!bookmarkStore.urlsMap) return;
+
+			var url = _.rtrim(inputUrl, '/');
+			var urlsList = bookmarkStore.urlsMap[url];
+
+			if (urlsList){ // get first bookmarks that match entered url
+				var b = _.find(urlsList, function (item){return (!exceptThisBookmarkId) || exceptThisBookmarkId != item.id});
+				if (b){
+					var result = {id: b.id, title: b.title, url:inputUrl, labels: b.labels,
+						listFolders: _(b.labels.join(',')).prune(15, '..'),
+						shortTitle: b.title.substring(0, _.min(b.title.length, 25))
+					};
+					console.log("Suggesting...");
+					console.log(result);
+					return result;
+				}
+			}
+			return null;
 		},
 
 		getFolderById: function(id){
@@ -110,22 +150,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				service.filterByPartial([]);
 			bookmarkStore.filterOn = false;
 			bookmarkStore.filter = undefined;
-		},
-
-		checkBookmarkExists : function(inputUrl, exceptThisBookmarkId){
-			var urlsMap = bookmarkStore.urlsMap;
-			if (inputUrl && urlsMap[inputUrl]){ // get first bookmarks that match entered url
-				var b = _.find(urlsMap[inputUrl], function (item){return (!exceptThisBookmarkId) || exceptThisBookmarkId != item.id});
-				if (b){
-					var result = {id: b.id, title: b.title, url:inputUrl, labels: b.labels,
-						shortTitle: b.title.substring(0, _.min(b.title.length, 15))
-					};
-					console.log("Suggesting...");
-					console.log(result);
-					return result;
-				}
-			}
-			return null;
 		},
 
 		matchesFilter : function(bookmark, filter){
@@ -168,15 +192,19 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 
 			// remove from previous url map
 			if (urlChanged){
-				service.removeFromListById(bookmarkStore.urlsMap[existing.url], id);
+				service._removeFromUrlMap(existing);
 			}
 			// add to new url map
-			if (_.isUndefined(bookmarkStore.urlsMap[data.url])){
+			if (!existing || urlChanged){
+				service._addToUrlMap(data);
+			}
+
+			/*if (_.isUndefined(bookmarkStore.urlsMap[data.url])){
 				bookmarkStore.urlsMap[data.url] = [b];
 			}else{
 				if (!existing || urlChanged)
 					bookmarkStore.urlsMap[data.url].push(b);
-			}
+			}*/
 
 			// update folders
 			if (existing && _.difference(existing.labels, data.labels)){
@@ -232,8 +260,9 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			service.removeFromListById(bookmarkStore.folders[service.folderAll.id], id);
 			service._updateFoldersCount(service.folderAll.id);
 
-			console.log("Removing from urls list for '"+ b.url+" id="+id);
-			service.removeFromListById(bookmarkStore.urlsMap[b.url], id);
+			//console.log("Removing from urls list for '"+ b.url+" id="+id);
+			//service.removeFromListById(bookmarkStore.urlsMap[b.url], id);
+			service._removeFromUrlMap(b);
 			service.removeFromListById(bookmarkStore.all, id);
 		},
 
