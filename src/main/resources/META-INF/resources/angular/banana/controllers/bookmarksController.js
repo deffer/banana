@@ -70,7 +70,7 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	};
 
 	$scope.filterAction = function(){
-		var filter = $scope.filterInput.split(" ");
+		var filter = $scope.filterInput.toLowerCase().split(" ");
 		bookmarksShuffle.filterByPartial(filter);
 		$scope.bookmarkStore.filterOn = true;
 		$scope.bookmarkStore.filter = filter;

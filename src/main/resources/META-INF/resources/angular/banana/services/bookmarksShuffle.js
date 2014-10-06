@@ -1,5 +1,14 @@
 iBookmarks.app.factory('bookmarksShuffle', function (){
 	var bookmarkStore = {filterOn:false};
+
+	var updateSearchFields = function(b){
+		if (b.title) b.titleLowercase = b.title.toLowerCase();
+		else b.titleLowercase = "";
+
+		if (b.url) b.urlLowercase = b.url.toLowerCase();
+		else b.urlLowercase = "";
+	} ;
+
 	var service = {
 		folderUnlabelled : {id: 'App123Unlabelled', originalName: 'Unlabelled', count: 0},
 		folderAll : {id: 'App123AllLabels', originalName: 'All', count: 0},
@@ -9,6 +18,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			bookmarkStore.filter = null;
 
 			bookmarkStore.all = bookmarks;
+			_.each(bookmarkStore.all, updateSearchFields);
 			service.filterByPartial([]);
 			service.updateUrlMap(); // create urls map for faster access
 			return bookmarkStore;
@@ -88,13 +98,8 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		// create urls map for faster access
 		updateUrlMap : function(){
 			bookmarkStore.urlsMap = {};
-			//_.each(_.pluck(bookmarkStore.all, 'url'), function(url){bookmarkStore.urlsMap[url] = []});
 			_.each(bookmarkStore.all, function (bookmark) {
 				service._addToUrlMap(bookmark);
-				/*var list = bookmarkStore.urlsMap[bookmark.url];
-				if (!_.find(list, function(item) {return item.id == bookmark.id})){ // although we dont expect duplicate ids from server
-					list.push(bookmark);
-				} */
 			});
 			return bookmarkStore;
 		},
@@ -117,8 +122,8 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		},
 
 		checkBookmarkExists : function(inputUrl, exceptThisBookmarkId){
-			if (!inputUrl) return;
-			if (!bookmarkStore.urlsMap) return;
+			if (!inputUrl) return null;
+			if (!bookmarkStore.urlsMap) return null;
 
 			var url = _.rtrim(inputUrl, '/');
 			var urlsList = bookmarkStore.urlsMap[url];
@@ -155,7 +160,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		matchesFilter : function(bookmark, filter){
 			var matches = true;
 			_.each(filter, function(part){
-				if (matches && bookmark.title.indexOf(part)<0 && bookmark.url.indexOf(part)<0)
+				if (matches && bookmark.titleLowercase.indexOf(part)<0 && bookmark.urlLowercase.indexOf(part)<0)
 					matches =  false;
 			});
 			return matches;
@@ -170,6 +175,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		 * @param existing
 		 */
 		updateAfterBookmarkChanged: function(data, existing){
+			updateSearchFields(data);
 			var b = existing ? existing : data;
 			var id = b.id;
 
@@ -198,13 +204,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			if (!existing || urlChanged){
 				service._addToUrlMap(data);
 			}
-
-			/*if (_.isUndefined(bookmarkStore.urlsMap[data.url])){
-				bookmarkStore.urlsMap[data.url] = [b];
-			}else{
-				if (!existing || urlChanged)
-					bookmarkStore.urlsMap[data.url].push(b);
-			}*/
 
 			// update folders
 			if (existing && _.difference(existing.labels, data.labels)){
@@ -236,6 +235,8 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 				b.title = data.title;
 				b.url = data.url;
 				b.labels = data.labels;
+				b.titleLowercase = data.titleLowercase;
+				b.urlLowercase = data.urlLowercase;
 			}else{
 				// add to all
 				bookmarkStore.all.push(b);
@@ -260,8 +261,6 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 			service.removeFromListById(bookmarkStore.folders[service.folderAll.id], id);
 			service._updateFoldersCount(service.folderAll.id);
 
-			//console.log("Removing from urls list for '"+ b.url+" id="+id);
-			//service.removeFromListById(bookmarkStore.urlsMap[b.url], id);
 			service._removeFromUrlMap(b);
 			service.removeFromListById(bookmarkStore.all, id);
 		},
