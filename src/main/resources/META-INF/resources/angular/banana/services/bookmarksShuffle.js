@@ -304,7 +304,7 @@ iBookmarks.app.factory('bookmarksShuffle', function (){
 		},
 
 		removeFromListById: function(list, id){
-			var item = _.where(list, {id: id});
+			var item = _.findWhere(list, {id: id});
 			if (item){
 				var idx = list.indexOf(item);  //  \
 				list.splice(idx, 1);           // _ there must be a better way
