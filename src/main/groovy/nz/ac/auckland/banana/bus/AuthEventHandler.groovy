@@ -57,9 +57,8 @@ class AuthEventHandler{
 						CLIENT_ID, CLIENT_SECRET, code, "postmessage").execute();
 
 			// You can read the Google user ID in the ID token.
-			// This sample does not use the user ID.
 			GoogleIdToken idToken = tokenResponse.parseIdToken()
-			String gplusId = idToken.getPayload().getSubject()  //getUserId();
+			String gplusId = idToken.getPayload().getSubject()  //getUserId(); is deprecated
 			log.debug("Received: subject=${idToken.getPayload().getSubject()} and whole response is \n${tokenResponse.toString()}")
 
 			// Store the token in the session for later use.

@@ -1,23 +1,31 @@
+Pre-requisites:
+
+1. Configure new web application in google dev console.
+   Instructions here: http://deffer-dev.blogspot.co.nz/2014/12/how-to-configure-g-signin-for-you-web.html
+
+2. Save you client secret in the property file.
+
+3. Install redis
+   Redis for windows can be found here:
+   https://github.com/MSOpenTech/redis/blob/2.6/bin/release/redisbin64.zip
+
+
+
+Notes:
+
 # download your google bookmarks
 http://www.google.com/bookmarks/?output=xml
 OR
 http://www.google.com/bookmarks/?output=xml&num=1000
 
-jQuery does support xmlp if you set dataType to jsonp xml. Per the docs: "As of jQuery 1.5, jQuery can convert a dataType from what it received in the Content-Type header to what you require. For example, if you want a text response to be treated as XML, use "text xml" for the dataType. You can also make a JSONP request, have it received as text, and interpreted by jQuery as XML: "jsonp text xml." Similarly, a shorthand string such as "jsonp xml" will first attempt to convert from jsonp to xml, and, failing that, convert from jsonp to text, and then from text to xml."
-
-
+# examples
 http://www.mmartins.com/mmartins/googlebookmarksapi/
-
-
-# dowloadn redis for windows from here
-https://github.com/MSOpenTech/redis/blob/2.6/bin/release/redisbin64.zip
 
 # [OPTIONAL] install redis as service
 # download redis service
 https://github.com/kcherenkov/redis-windows-service/downloads
 # create service
 sc create Redis start= auto DisplayName= Redis binpath= "\"C:\Program Files\Redis\RedisService.exe\" \"C:\Program Files\Redis\redis.conf\""
-
 
 # redis links
 https://github.com/xetorthio/jedis
@@ -58,3 +66,6 @@ myApp.controller('MyController', function($scope) {
 $("#e13_ca").click(function() {
 	$("#e13").val("CA").trigger("change"); // <--------------
 });
+
+
+jQuery does support xmlp if you set dataType to jsonp xml. Per the docs: "As of jQuery 1.5, jQuery can convert a dataType from what it received in the Content-Type header to what you require. For example, if you want a text response to be treated as XML, use "text xml" for the dataType. You can also make a JSONP request, have it received as text, and interpreted by jQuery as XML: "jsonp text xml." Similarly, a shorthand string such as "jsonp xml" will first attempt to convert from jsonp to xml, and, failing that, convert from jsonp to text, and then from text to xml."
