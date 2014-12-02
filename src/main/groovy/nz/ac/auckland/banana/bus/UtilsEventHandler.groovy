@@ -12,11 +12,11 @@ import java.util.regex.Pattern
 
 @UniversityComponent
 @Event(name="utils", namespace = "bookmarks")
-class UtilsEventHandler implements EventHandler<UtilsRequest, UtilsResponse>{
+class UtilsEventHandler {
 
 	Map<String, Closure> actions = ['timeMillis': this.&timeMillis, 'regexTest': this.&regexTest]
 
-	@Override
+
 	UtilsResponse handleEvent(UtilsRequest requestType) throws Exception {
 		Closure call = actions.get(requestType.action)
 		if (call){
@@ -31,18 +31,31 @@ class UtilsEventHandler implements EventHandler<UtilsRequest, UtilsResponse>{
 		}
 	}
 	UtilsResponse regexTest(UtilsRequest request){
+
 		UtilsResponse result = new UtilsResponse()
 		Matcher matcher = Pattern.compile(request.input2).matcher(request.input)
 
-		result.output = matcher.matches()? "yes" : "no"
+		if (matcher.matches()){
+			result.output = "yes";
+			if (matcher.size()>0 && matcher[0] instanceof Collection){
+				result.outputs = new ArrayList(["Groups:"]+(Collection)matcher[0]).toArray();
+			}
+		}else{
+			if (matcher.size()>0){
+				result.output = "contains";
+				Collection results = matcher.collect {return it instanceof String? it : it[0]}
+				result.outputs = new ArrayList(["Found matches:"]+results).toArray();
+			}else{
+				result.output = "no";
+			}
+		}
 
 		return result
-
 	}
 
 	UtilsResponse timeMillis(UtilsRequest request){
 		try{
-			String input = requestType.input
+			String input = request.input
 			if (!input){
 				input = System.currentTimeMillis().toString()
 			}else{
@@ -59,14 +72,14 @@ class UtilsEventHandler implements EventHandler<UtilsRequest, UtilsResponse>{
 		return new UtilsResponse(output: "")
 	}
 
-	static class UtilsRequest extends EventRequestBase {
+	static class UtilsRequest{
 		String action
 		String input
 		String input2
 	}
 
 	// different meaning depending on action
-	static class UtilsResponse extends EventResponseBase {
+	static class UtilsResponse{
 		String error
 		String input
 		Object output

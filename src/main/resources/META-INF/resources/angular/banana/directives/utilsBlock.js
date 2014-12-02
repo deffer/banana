@@ -1,3 +1,5 @@
+// does not work.
+// just keeping it here for reference
 iBookmarks.app.directive('utilsBlock', ['backend', function (backend) {
 	return {
 		restrict: 'EA',
@@ -21,7 +23,7 @@ iBookmarks.app.directive('utilsBlock', ['backend', function (backend) {
             console.log("Linking directive");
 
 			scope.getTimeString = function(){
-			    console.log("Calling TimeString...")
+			    console.log("Calling TimeString...");
 				backend.callUtils("timeMillis", scope.timeMillis).then(function(results){
 					console.log(results);
 					if (!_.isUndefined(results) && !_.isUndefined(results.output)){

@@ -10,7 +10,7 @@
 <div><hr></div>
 
 <div>
-	<div class="control-group" ng-class="{error: regexFullMatch=='no', success: regexFullMatch=='yes'}">
+	<div class="control-group" ng-class="{error: regexFullMatch=='no', success: regexFullMatch=='yes', warning: regexFullMatch=='contains'}">
 		<div class="controls">
 			<input class="span5" type="text" id="inputRegexString" placeholder="Test string"
 			        ng-model="regexTestInput"/>
