@@ -1,6 +1,7 @@
 iBookmarks.app.directive('utilsBlock', ['backend', function (backend) {
 	return {
-		restrict: 'A',
+		restrict: 'EA',
+		replace: false,
 		scope: {
 			functionA : "="
 		},
@@ -17,8 +18,10 @@ iBookmarks.app.directive('utilsBlock', ['backend', function (backend) {
 			scope.regexTestInput = "";
 			scope.regexMatches = [];
 			scope.regexFullMatch = ""; // values yes or no
+            console.log("Linking directive");
 
 			scope.getTimeString = function(){
+			    console.log("Calling TimeString...")
 				backend.callUtils("timeMillis", scope.timeMillis).then(function(results){
 					console.log(results);
 					if (!_.isUndefined(results) && !_.isUndefined(results.output)){
