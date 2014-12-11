@@ -10,7 +10,7 @@
 
 	<groupId>nz.ac.auckland.banana</groupId>
 	<artifactId>banana-core</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>banana-core</name>
 

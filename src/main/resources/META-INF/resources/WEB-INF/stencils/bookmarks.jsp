@@ -16,7 +16,7 @@
 		iBookmarks.sessionToken = "${sessionToken}";
 	</script>
 
-	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+	<link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
 	<!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"-->
 
 	<%--stylesheet includes --%>
@@ -67,6 +67,7 @@
 			    </span>
 				</a>
 			</span>
+			<button type="button" class="btn btn-xs btn-default">Blizzard</button>
 		</div>
 		<div id="gConnect" ng-show="!signedIn">
 			<button class="g-signin"
