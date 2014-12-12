@@ -67,7 +67,7 @@
 			    </span>
 				</a>
 			</span>
-			<button type="button" class="btn btn-xs btn-default">Blizzard</button>
+			<button type="button" class="btn btn-xs btn-default" ng-click="loginBliz()">Try Bliz</button>
 		</div>
 		<div id="gConnect" ng-show="!signedIn">
 			<button class="g-signin"

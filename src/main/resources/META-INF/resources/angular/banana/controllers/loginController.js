@@ -7,6 +7,17 @@ iBookmarks.app.LoginCtrl = ['$scope', '$http', '$rootScope', '$window',  'backen
 		$scope.signedIn = false;
 		$scope.authnInfo = {};
 
+
+		$scope.loginBliz = function(){
+			location.href = new URI("https://us.battle.net/oauth/authorize").addSearch({
+				// scope: 'wow.profile' OR 'sc2.profile'
+				client_id: 'p7279f6w26hhg7rwr56u7ujgn6xpqtp3',
+				state: ""+ _.random(3000000)+""+ _.random(3000000)+""+ _.random(3000000),
+				redirect_uri: "https://deffer.org/bliz_auth",
+				response_type: "code"
+			}).toString();
+		};
+
 		$scope.proceedLogin = function () {
 			var request = gapi.client.plus.people.get({'userId': 'me'});
 			request.execute(function (profile) {
