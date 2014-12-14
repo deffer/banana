@@ -53,14 +53,15 @@ class AuthCallbackBlizStencil implements Stencil{
 		def resp = [incoming: attrCode, tokenReponse: ['a':'b']]
 
 		def http = new HTTPBuilder( 'https://us.battle.net/oauth/token' )
-		http.auth.basic(CLIENT_ID, CLIENT_SECRET)
+		//http.auth.basic(CLIENT_ID, CLIENT_SECRET)
 		/*http.handler.failure = { respp ->
 			println "Unexpected failure: ${respp.statusLine}"
 		} */
 
 		http.post([
-			//requestContentType: ContentType.URLENC,
+			requestContentType: ContentType.URLENC,
 			contentType: ContentType.JSON,
+            headers: [Authorization: 'Basic '+"$CLIENT_ID:$CLIENT_SECRET".bytes.encodeBase64().toString()],
 			body: [
 				grant_type: 'authorization_code',
 				redirect_uri : 'https://deffer.org/bliz_auth',
