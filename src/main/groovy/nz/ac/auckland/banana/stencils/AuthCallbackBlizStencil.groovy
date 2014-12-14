@@ -1,11 +1,16 @@
 package nz.ac.auckland.banana.stencils
 
+import groovy.json.JsonParserType
+import groovy.json.JsonSlurper
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.HttpResponseException
+import groovyx.net.http.RESTClient
 import nz.ac.auckland.common.config.ConfigKey
 import nz.ac.auckland.stencil.Path
 import nz.ac.auckland.stencil.Stencil
 import nz.ac.auckland.util.JacksonHelper
+import org.codehaus.groovy.runtime.DefaultGroovyMethods
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -50,27 +55,42 @@ class AuthCallbackBlizStencil implements Stencil{
 			return
 		}
 
-		def resp = [incoming: attrCode, tokenReponse: ['a':'b']]
+		def resp = [incoming: attrCode, tokenReponse: 'ab']
 
-		def http = new HTTPBuilder( 'https://us.battle.net/oauth/token' )
-		//http.auth.basic(CLIENT_ID, CLIENT_SECRET)
-		/*http.handler.failure = { respp ->
-			println "Unexpected failure: ${respp.statusLine}"
-		} */
+		def http = new RESTClient( 'https://us.battle.net/oauth/token' )
+		//http.auth.basic(CLIENT_ID, CLIENT_SECRET) // doesn't work
+		def httpTokenResponse
+		try{
+			httpTokenResponse = http.post([
+				requestContentType: ContentType.URLENC,
+				contentType: ContentType.TEXT, // groovy 2.3.x cant parse JSON
+	            headers: [
+			        Authorization: 'Basic '+"$CLIENT_ID:$CLIENT_SECRET".bytes.encodeBase64().toString(),
+			        Accept : 'application/json'],
+				body: [
+					grant_type: 'authorization_code',
+					redirect_uri : 'https://deffer.org/bliz_auth',
+					code: code]]
+			)
 
-		http.post([
-			requestContentType: ContentType.URLENC,
-			contentType: ContentType.JSON,
-            headers: [Authorization: 'Basic '+"$CLIENT_ID:$CLIENT_SECRET".bytes.encodeBase64().toString()],
-			body: [
-				grant_type: 'authorization_code',
-				redirect_uri : 'https://deffer.org/bliz_auth',
-				code: 'gqctcebzwmp45kskh6y9y5ed'
-				//code: code
-		]], { req, json ->
-			println "POST response status: ${resp.statusLine}"
-			resp.tokenReponse = json
-		});
+			String content = httpTokenResponse.data?.text
+			resp.tokenResposeRaw = content
+			def parser = new JsonSlurper().setType(JsonParserType.LAX)
+			def jsonResp = parser.parseText(content)
+			resp.tokenReponse = jsonResp
+		}catch (HttpResponseException he){
+			String content = he.getResponse().data.text
+			log.error(he.getMessage(), he)
+			log.error(content)
+
+			resp.status = he.response.status
+			resp.httpError = he.response.statusLine?.toString()
+			resp.tokenReponse = content
+		} catch (Exception e){
+			log.error(e.getMessage(),e)
+			resp.error = e.getMessage()
+		}
+
 
 		String result = JacksonHelper.serialize(resp);
 		response.writer.write(result);
