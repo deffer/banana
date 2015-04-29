@@ -148,6 +148,9 @@ button.btn:focus {
 .dumbBox input.span4{
 	margin-left: 75px;
 	width: 300px;
+	display: inline-block;
+	box-sizing: content-box;
+	min-height: 1px;
 }
 
 .close {
