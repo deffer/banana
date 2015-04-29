@@ -27,7 +27,7 @@ button.btn:focus {
     cursor: pointer;
 }
 
-/* Folders selection dropdown, bootrstrap style */
+/* Folders selection dropdown, bootstrap style */
 .dropdown-menu > li.cct{
     padding: 0 10px;
 }
