@@ -83,14 +83,15 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 
 	$scope.openAddBookmark = function () {
 
-		$timeout(function(){
+		/*$timeout(function(){
 			var height = angular.element("#addBookmarkModalBox").height();
 			var top = $scope.topPosition(height);
 			var cont = angular.element("#addBookmarkModalContainer");
 			cont.css('top', top+"px");
-		}, 100);
+		}, 100);*/
 
 		$scope.visible = true;
+		$('.dumbBoxWrap').show();
 	};
 
 
@@ -102,6 +103,7 @@ iBookmarks.app.ModifyCtrl = ['$scope', '$rootScope', '$window', '$timeout', 'bac
 		$scope.suggestedBookmark = null;
 
 		$scope.visible = false;
+		$('.dumbBoxWrap').hide();
 	};
 
 
