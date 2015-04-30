@@ -39,55 +39,13 @@ button.btn:focus {
 	font-weight: bold;
 }
 
-/* Modal dialog */
-.modal-box {
-	position: absolute;
-	z-index: 1001;
-	padding: 20px;
-	background: white;
-	border-radius: 5px;
-	box-shadow: 0 0 10px;
-}
-
-.modal-box .control-row {
-	overflow: hidden;
-	position: relative;
-}
-
-.modal-box .control-label {
-	position: absolute;
-	left: 0;
-	top: 0;
-}
-
-.modal-box input[type='text'], .modal-box div.select2-container {
-	margin-left: 75px;
-}
-
-.smoke-layer {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(10, 10, 10, 0.4);
-	z-index: 1000;
-}
-
-.modal-content {
-	left: 50%;
-	/*margin-top: -120px;*/
-	margin-left: -250px;
-	position: absolute;
-	display: block;
-}
-
-
-
+/*  Modal dialog */
+/* z-index should be less than 9998 to allow select2 dropdown part to be visible */
 .dumbBoxWrap { /* The div that shows/hides. */
 	display:none; /* starts out hidden */
 	z-index:5000; /* High z-index to ensure it appears above all content */
 }
+
 .dumbBoxOverlay { /* Shades out background when selector is active */
 	position:fixed;
 	width:100%;
@@ -109,7 +67,7 @@ button.btn:focus {
 
 .vertical-offset { /* Fixed position to provide the vertical offset */
 	position:fixed;
-	left: 0px;
+	left: 0px; /* Don't know why, but its not set */
 	top:30%;
 	width:100%;
 	z-index:5000; /* ensures box appears above overlay */
@@ -130,6 +88,7 @@ button.btn:focus {
 	background: -o-linear-gradient(#fff, #999);*/
 }
 
+/* Turn off some bootstrap styles on modal dialog  */
 .dumbBox .control-row {
 	overflow: hidden;
 	position: relative;
@@ -154,6 +113,7 @@ button.btn:focus {
 	min-height: 1px;
 }
 
+/* Nice button for closing modal dialogs. Currently not used.*/
 .close {
 	background: #606061;
 	color: #FFFFFF;

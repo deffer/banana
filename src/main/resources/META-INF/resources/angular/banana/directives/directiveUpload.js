@@ -1,4 +1,4 @@
-iBookmarks.app.factory('uploadManager', function ($rootScope) {
+iBookmarks.app.factory('uploadManager', function ($rootScope, $q) {
 	var _files = [];
 	return {
 		add: function (file) {
@@ -19,10 +19,18 @@ iBookmarks.app.factory('uploadManager', function ($rootScope) {
 			return fileNames;
 		},
 		upload: function () {
+			var promise;
 			$.each(_files, function (index, file) {
-				file.submit();
+				var defer = $q.defer();
+                promise = defer.promise;
+				file.submit().error(function(e){
+					defer.reject(e);
+				}).success(function(e){
+					defer.resolve({});
+				});
 			});
 			this.clear();
+			return promise; // its one file. always.
 		},
 		setProgress: function (percentage) {
 			$rootScope.$broadcast('uploadProgress', percentage);

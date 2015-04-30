@@ -110,7 +110,12 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 	};
 
 	$scope.upload = function () {
-		uploadManager.upload();
+		var promise = uploadManager.upload();
+		promise.then(function (e) {
+			alertsService.addPopup("Upload completed successfully!");
+		}, function(error){
+			alertsService.addAlert({message:error.statusText, type: 'error'}, true);
+		});
 		$scope.files = [];
 	};
 
@@ -164,7 +169,8 @@ iBookmarks.app.BookmarksCtrl = ['$scope', '$http', '$rootScope', '$window', 'upl
 
 	$rootScope.$on('uploadProgress', function (e, call) {
 		if (call > 100) {
-			console.log('Upload finished!');
+			// See uploadManager.upload() function for alternative handling of response status
+			console.log('Upload finished! (progress 100%)');
 			$scope.percentage = 0;
 			$scope.getBookmarksFromServer();
 		} else {
