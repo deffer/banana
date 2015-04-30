@@ -109,6 +109,7 @@ button.btn:focus {
 
 .vertical-offset { /* Fixed position to provide the vertical offset */
 	position:fixed;
+	left: 0px;
 	top:30%;
 	width:100%;
 	z-index:5000; /* ensures box appears above overlay */
