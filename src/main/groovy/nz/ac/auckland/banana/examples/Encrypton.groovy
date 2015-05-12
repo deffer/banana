@@ -3,8 +3,10 @@ package nz.ac.auckland.banana.examples
 import org.codehaus.groovy.runtime.EncodingGroovyMethods
 
 import javax.crypto.Cipher
+import javax.crypto.Mac
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 import java.nio.ByteBuffer
@@ -51,17 +53,40 @@ def encrypt(String pass, String text) {
 
 	// let IV be the initialisation vector for use when encrypting the file data (16 bytes)
 	// let Q (metadata) be the concatenated values s | c | encryptedKey | IV.
-	// let aQ be the authenticity record for Q, defined as H(Q, ka), where H is a cryptographic hash function in a HMAC construction, e.g. HMAC-SHA256.
+	// let aQ be the authenticity record for Q, defined as H(Q, pak), where H is a cryptographic hash function in a HMAC construction, e.g. HMAC-SHA256.
 	// store Q and aQ in the file header.
 	byte[] iv = getRandomBytes(16)
 	byte[] bc = intToBytes(cycles)
-	println "int to bytes "+bc.encodeHex().toString()
-	def q = []
-	[salt, bc, encryptedKey, iv].each {bytes->  q.addAll(bytes) }
+	println "iv = ${iv.encodeHex().toString()} c= ${bc.encodeHex().toString()}"
+	def t2 = []
 
-	println "Q = "+(q as byte[]).encodeHex().toString()
+	[salt, bc, encryptedKey, iv].each {bytes->  t2.addAll(bytes) }
+	byte[] q = t2 as byte[]
+	println "Q = ${q.encodeHex().toString()} ${q.length} bytes"
+	byte[] qak = hmac(q, pak)
+	println "qak = ${qak.encodeHex().toString()} ${qak.length} bytes"
 
-	//Cipher dcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+	byte[] encryptedText = encryptAES(randomKey, iv, text.bytes)
+
+	byte[] decryptedText = encryptAES(randomKey, iv, encryptedText, false)
+	println new String(decryptedText)
+}
+
+
+
+def encryptAES(byte[] key, byte[] iv, byte[] data, boolean encrypt = true){
+	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+	SecretKey secretKey =  new SecretKeySpec(key, "AES")
+	cipher.init(encrypt?Cipher.ENCRYPT_MODE:Cipher.DECRYPT_MODE, (SecretKeySpec) secretKey, new IvParameterSpec(iv))
+	return cipher.doFinal(data)
+}
+
+def hmac(byte[] key, byte[] data) throws Exception {
+	Mac mac = Mac.getInstance("HmacSHA256");
+	SecretKeySpec secretKey = new SecretKeySpec(key, "HmacSHA256");
+	mac.init(secretKey);
+	return mac.doFinal(data)
+	//return Hex.encodeHexString(mac.doFinal(data.getBytes()));
 }
 
 def intToBytes(int i){
